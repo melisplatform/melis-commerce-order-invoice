@@ -1,0 +1,39 @@
+<?php
+$id = '';
+if (!empty($this->zoneconfig['conf']['id'])){
+    $id .= $this->orderId.'_'.$this->zoneconfig['conf']['id'];
+}
+?>
+<div id="<?= $id ?>" data-melisKey="<?= $this->melisKey; ?>">
+    <?php
+    $this->melisGenericTable()->setTable(array(
+        'id' => $this->orderId.'_tableOrderInvoiceList',
+        'data-orderid' => $this->orderId,
+        'class' => 'table table-striped table-primary dt-responsive nowrap',
+        'cellspacing' => '0',
+        'width' => '100%'
+    ));
+    $columns = array();
+    $columnStyle = array();
+
+    foreach($this->tableColumns as $colName => $columnText)
+    {
+        $columns[] = $columnText['text'];
+    }
+    $this->melisGenericTable()->setColumns($columns);
+
+    echo $this->melisGenericTable()->renderTable();
+    ?>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            <?php echo $this->getToolDataTableConfig; ?>
+            $(document).on('column-sizing.dt','#<?php echo $this->orderId;?>_tableOrderInvoiceList', function(e, settings) {
+                if( melisCore.screenSize >= 768){
+                    $('#<?php echo $this->orderId;?>_tableOrderInvoiceList').find("th:nth-child(8)").attr("style", "").css({"width" : "1px"}).css({"padding" : "0"});
+                } else {
+                    $('#<?php echo $this->orderId;?>_tableOrderInvoiceList').find("th:nth-child(8)").css({"width" : "1px"});
+                }
+            });
+        });
+    </script>
+</div>	

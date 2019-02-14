@@ -1,0 +1,11 @@
+<?php
+$id = '';
+if (!empty($this->zoneconfig['conf']['id'])) {
+    $id .= $this->orderId.'_'.$this->zoneconfig['conf']['id'];
+}
+$name = '';
+if (!empty($this->zoneconfig['conf']['name'])) {
+    $name = $this->zoneconfig['conf']['name'];
+}
+?>
+<button class="btn btn-success regenerate-invoice" value="<?php echo $this->orderId ?>"><?php echo $this->translate('tr_meliscommerce_order_invoice_button_regenerate_invoice')?></button>

@@ -1,0 +1,298 @@
+ <style>
+        table {
+            display: table;
+        }
+        table thead tr th,
+        table tbody tr td {
+            display: table-cell;
+            font-size: 15px;
+            /* width: 20%; */
+            text-align: right;
+            padding: 2px 5px;
+        }
+        table tbody tr td {
+            height: 10px;
+            border: 1px solid #333;
+        }
+        #td-invoice-date {
+            width: 100%;
+        }
+        .content-items {
+            background-color: #e61c23;
+            color: #fff;
+            font-weight: bold;
+            border-top: 1px solid #333;
+        }
+        .total td,
+        .comments .comments-text,
+        .content-items td,
+        .bill-to td {
+            text-align: left;
+        }
+        .content-items td:not(.items) {
+            text-align: center;
+        }
+        .total .total-text {
+            font-weight: bold;
+        }
+        table tbody .heading td:first-child {
+            text-align: left;
+        }
+        table tbody .comments td,
+        table tbody .bill-to td,
+        table tbody .total td,
+        table tbody .spacing td,
+        table tbody .heading td {
+            border: 0;
+        }
+        .others td.td-underline {
+            border-bottom: 1px solid #333;
+            position: relative;
+        }
+        .others td.td-underline:after {
+            background: #333;
+            height: 1px;
+            content: "";
+            display: block;
+            width: 100%;
+            position: absolute;
+            left: 0;
+            bottom: 1px;
+        }
+    </style>
+    <page style="margin: 3em 0;">
+        <table height="15" id="invoice" border="0" style="width: 100%;" cellpadding="0" cellspacing="0">
+            <thead>
+            <tr class="heading">
+                <th class="logo" align="left" style="width: 40%;"><img src="<?php echo $this->serverUrl() . '/MelisCommerceOrderInvoice/assets/logo-melis.png' ?>"></th>
+                <th style="width: 15%;">&nbsp;</th>
+                <th style="width: 15%;">&nbsp;</th>
+                <th style="width: 15%;">&nbsp;</th>
+                <th style="width: 15%;"><h1>INVOICE</h1></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class="heading">
+                <td style="width: 40%; text-align: left;">4 rue du Dahomey<br/>75011 Paris<br/> France</td>
+                <td style="width: 15%;">&nbsp;</td>
+                <td style="width: 15%;">&nbsp;</td>
+                <td style="width: 15%;">&nbsp;</td>
+                <td style="width: 15%;">&nbsp;</td>
+            </tr>
+            <tr class="heading date">
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td style="text-align: right;">DATE</td>
+                <td><?php echo date('m-d-Y', strtotime($this->invoiceDate)) ?></td>
+            </tr>
+            <tr class="heading date invoice">
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td style="text-align: right;">INVOICE #</td>
+                <td><?php echo $this->invoiceNumber ?></td>
+            </tr>
+            <tr class="spacing">
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr class="spacing">
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr class="spacing">
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr class="bill-to header">
+                <td style="background-color: #e61c23; color: #fff; font-weight: bold; border-top: 1px solid #333; border-bottom: 1px solid #333; border-left: 1px solid #333;">BILL TO</td>
+                <td style="background-color: #e61c23; color: #fff; font-weight: bold; border-top: 1px solid #333; border-bottom: 1px solid #333;">&nbsp;</td>
+                <td style="background-color: #e61c23; color: #fff; font-weight: bold; border-top: 1px solid #333; border-bottom: 1px solid #333; border-right: 1px solid #333;">&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+
+            <?php foreach ($this->addresses as $address) { ?>
+                <?php if ($address->oadd_type == 1) { ?>
+                    <?php $billingAddress = $address ?>
+                    <?php break; ?>
+                <?php } ?>
+            <?php } ?>
+            <tr class="bill-to">
+                <td style="border-left: 1px solid #333;"><?php echo $billingAddress->oadd_firstname . ' ' . $billingAddress->oadd_name ?></td>
+                <td>&nbsp;</td>
+                <td style="border-right: 1px solid #333;">&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr class="bill-to">
+                <td style="border-left: 1px solid #333;"><?php echo $billingAddress->oadd_num . ', ' . $billingAddress->oadd_street ?></td>
+                <td>&nbsp;</td>
+                <td style="border-right: 1px solid #333;">&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr class="bill-to">
+                <td style="border-left: 1px solid #333;"><?php echo $billingAddress->oadd_city . ', ' . $billingAddress->oadd_zipcode ?></td>
+                <td>&nbsp;</td>
+                <td style="border-right: 1px solid #333;">&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr class="bill-to">
+                <td style="border-left: 1px solid #333; border-bottom: 1px solid #333;"><?php echo $billingAddress->oadd_country ?></td>
+                <td style="border-bottom: 1px solid #333;">&nbsp;</td>
+                <td style="border-right: 1px solid #333; border-bottom: 1px solid #333;">&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr class="spacing">
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr class="spacing">
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr class="spacing">
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr class="content-items items-heading">
+                <td style="width: 40%;" class="items">ITEMS</td>
+                <td style="width: 15%;">UNIT PRICE</td>
+                <td style="width: 15%;">QTY</td>
+                <td style="width: 15%;">DISCOUNT</td>
+                <td style="width: 15%;">AMOUNT</td>
+            </tr>
+
+            <?php foreach ($this->data['items'] as $item) { ?>
+                <tr class="item">
+                    <td style="border-right-width: 1px; border-right-style: solid; border-right-color: #333;text-align: left;"><?= $item['obas_product_name'] ?></td>
+                    <td style="border-left: 0;"><?= $item['obas_price_net'] ?></td>
+                    <td><?= $item['obas_quantity'] ?></td>
+                    <td><?= $item['discount'] ?></td>
+                    <td style="text-align: right;"><?= $item['amount'] ?></td>
+                </tr>
+            <?php } ?>
+
+            <tr class="total subtotal">
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>Subtotal</td>
+                <td style="text-align: right;"><?= $this->data['subtotal'] ?></td>
+            </tr>
+
+            <tr class="total discount">
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>Discount</td>
+                <td style="text-align: right;">&nbsp;</td>
+            </tr>
+
+            <?php $coupons = '' ?>
+            <?php if (!empty($this->data['coupons'])) { ?>
+                <tr class="total discount">
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>Code</td>
+                    <td style="text-align: right;">&nbsp;</td>
+                </tr>
+                <?php foreach ($this->data['coupons'] as $coupon) { ?>
+                    <tr class="total discount">
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td><?= $coupon['code'] ?></td>
+                        <td style="text-align: right;"><?= $coupon['discount'] ?></td>
+                    </tr>
+                <?php } ?>
+            <?php } ?>
+
+            <tr class="total shipping">
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>Shipping</td>
+                <td style="text-align: right;"><?= $this->data['shipping'] ?></td>
+            </tr>
+            <tr class="total row-total">
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td class="total-text" style="border-top: black 1px solid;">TOTAL</td>
+                <td style="text-align: right;border-top: black 1px solid;"><?= $this->data['total'] ?></td>
+            </tr>
+            <tr class="comments header">
+                <td colspan="2" class="comments-text" style="background-color: #e61c23; color: #fff; font-weight: bold; border-top: 1px solid #333; border-bottom: 1px solid #333; border-left: 1px solid #333;">COMMENTS</td>
+                <td style="background-color: #e61c23; color: #fff; font-weight: bold; border-top: 1px solid #333; border-bottom: 1px solid #333; border-right: 1px solid #333;">&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr class="comments">
+                <td style="border-left: 1px solid #333;">&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td style="border-left: 1px solid #333;">&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr class="comments">
+                <td style="border-left: 1px solid #333;">&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td style="border-left: 1px solid #333;">&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr class="comments">
+                <td style="border-left: 1px solid #333;">&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td style="border-left: 1px solid #333;">&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr class="comments">
+                <td style="border-left: 1px solid #333;">&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td style="border-left: 1px solid #333;">&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr class="comments">
+                <td style="border-left: 1px solid #333;">&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td style="border-left: 1px solid #333;">&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr class="comments">
+                <td style="border-left: 1px solid #333; border-bottom: 1px solid #333;">&nbsp;</td>
+                <td style="border-bottom: 1px solid #333;">&nbsp;</td>
+                <td style="border-bottom: 1px solid #333;">&nbsp;</td>
+                <td style="border-left: 1px solid #333;">&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            </tbody>
+        </table>
+    </page>
