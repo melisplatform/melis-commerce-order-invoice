@@ -1,15 +1,28 @@
 <?php
     return [
         'plugins' => [
-            'meliscommerce' => [
+            'meliscommerceorderinvoice' => [
                 'ressources' => [
                     'js' => [
-                        'MelisCommerceOrderInvoice/js/meliscommerceorderinvoice.js'
+                        '/MelisCommerceOrderInvoice/js/meliscommerceorderinvoice.js'
                     ],
                     'css' => [
 
                     ],
+                    'build' => [
+                        //'disable_bundle' => true,
+                        // lists of assets that will be loaded in the layout
+                        'css' => [
+                            //'/MelisCommerceOrderInvoice/build/css/bundle.css',
+
+                        ],
+                        'js' => [
+                            '/MelisCommerceOrderInvoice/build/js/bundle.js',
+                        ]
+                    ],
                 ],
+            ],
+            'meliscommerce' => [
                 'interface' => [
                     'meliscommerce_orders' => [
                         'interface' => [
