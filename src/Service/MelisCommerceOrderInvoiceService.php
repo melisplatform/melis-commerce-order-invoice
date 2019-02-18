@@ -21,37 +21,6 @@ class MelisCommerceOrderInvoiceService extends MelisCoreGeneralService
     protected $invoiceId;
     protected $date;
 
-    public function testService($order, $template)
-    {
-        try {
-            $viewRendererService = $this->getServiceLocator()->get('ViewRenderer');
-
-            $view = new ViewModel();
-            $view->order = $order;
-            $view->invoiceDate = $this->date;
-            $view->invoiceNumber = $this->invoiceId;
-
-            if (is_null($template)) {
-                $view->setTemplate('orderinvoicetemplate/default');
-            } else {
-                $view->setTemplate($template);
-            }
-
-            $contents = $viewRendererService->render($view);
-
-            $html2pdf = new Html2Pdf('P', 'A4', 'en');
-            $html2pdf->writeHTML($contents);
-            $pdf = $html2pdf->output('', 'S');
-
-            return $pdf;
-        } catch (Html2PdfException $e) {
-            $html2pdf->clean();
-            $formatter = new ExceptionFormatter($e);
-
-            echo $formatter->getHtmlMessage();
-        }
-    }
-
     /**
      * html2pdf library - converts html to pdf
      * @param $order

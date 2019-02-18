@@ -8,76 +8,15 @@ use Zend\View\Model\JsonModel;
 
 class MelisCommerceOrderInvoiceController extends AbstractActionController
 {
-    public function testAction()
-    {
-        $couponSvc = $this->getServiceLocator()->get('MelisComCouponService');
-        $orderCoupons = $couponSvc->getCouponList(3);
-
-        $tmp = array();
-        foreach($orderCoupons as $coupon)
-        {
-            if($coupon->getCoupon()->coup_product_assign)
-            {
-                $coupon->getCoupon()->discountedBasket = $couponSvc->getCouponDiscountedBasketItems($coupon->getCoupon()->coup_id, 3);
-            }
-
-            $tmp[] = $coupon;
-        }
-
-
-
-        print_r($tmp);
-        exit;
-
-
-        $orderInvoiceService = $this->getServiceLocator()->get('MelisCommerceOrderInvoiceService');
-        $ordersService = $this->getServiceLocator()->get('MelisComOrderService');
-        $order = $ordersService->getOrderById(3);
-
-        print_r($order);
-        exit;
-
-        $pdf = $orderInvoiceService->testService($order, null);
-
-        $invoice1 = $orderInvoiceService->getOrderInvoiceList(15, null, null, 'DESC')[0];
-
-        $invoice1pdf = $invoice1['ordin_invoice_pdf'];
-
-        $pdf = preg_split("/((\r?\n)|(\r\n?))/", $pdf);
-        $invoice1pdf = preg_split("/((\r?\n)|(\r\n?))/", $invoice1pdf);
-
-        if (count($pdf) == count($invoice1pdf)) {
-            foreach($pdf as $key => $value) {
-                if ($value !== $invoice1pdf[$key]) {
-                    print('<br>');
-                    print($key . " - di pareha");
-                    print('<br>');
-                    var_dump($value);
-                    print('<br>');
-                    var_dump($invoice1pdf[$key]);
-                    print('<br>');
-                    print('===================================================');
-                } else {
-
-                }
-            }
-        } else {
-            print_r("di pareha ang count");
-            exit;
-        }
-    }
-
     public function getOrderInvoiceAction()
     {
         $orderId = $this->params()->fromPost('orderId', null);
 
         if (!is_null($orderId)) {
             $melisComAuthSrv = $this->getServiceLocator()->get('MelisComAuthenticationService');
-            $orderInvoiceTable = $this->getServiceLocator()->get('MelisCommerceOrderInvoiceTable');
             $orderInvoiceService = $this->getServiceLocator()->get('MelisCommerceOrderInvoiceService');
 
-//            $invoice = $orderInvoiceTable->getEntryByField('ordin_order_id', $orderId)->toArray()[0];
-            $invoice = $orderInvoiceService->getOrderInvoiceList(15, null, null, 'DESC')[0];
+            $invoice = $orderInvoiceService->getOrderInvoiceList($orderId, null, null, 'DESC')[0];
 
             // user id
             $clientId = $melisComAuthSrv->getClientId();
