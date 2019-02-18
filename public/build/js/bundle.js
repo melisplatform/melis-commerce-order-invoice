@@ -25,7 +25,7 @@ $(function() {
             );
             melisCoreTool.done(".regenerate-invoice");
         }).error(function () {
-
+            melisCoreTool.done(".regenerate-invoice");
         });
     });
 
@@ -70,9 +70,10 @@ $(function() {
                     translations.tr_meliscommerce_order_invoice_export_prompt_title,
                     translations.tr_meliscommerce_order_invoice_export_no_invoice
                 );
+                melisCoreTool.done('.export-order-pdf');
             }
         }).error(function () {
-
+            melisCoreTool.done('.export-order-pdf');
         });
     });
 
