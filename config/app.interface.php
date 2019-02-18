@@ -36,7 +36,7 @@
                                                         'conf' => [
                                                             'id' => 'id_meliscommerce_orders_content_tab_order_invoice',
                                                             'melisKey' => 'meliscommerce_orders_content_tab_order_invoice',
-                                                            'name' => 'Invoice',
+                                                            'name' => 'tr_meliscommerce_order_invoice_export_prompt_title',
                                                             'href' => 'id_meliscommerce_orders_content_tabs_content_order_invoice',
                                                             'icon' => 'glyphicons file',
                                                             'active' => '',
@@ -102,21 +102,6 @@
                                                                             ],
                                                                         ],
                                                                     ],
-//                                                                    'meliscommerce_orders_content_tabs_content_baskets_right_header' => [
-//                                                                        'conf' => [
-//                                                                            'id' => 'id_meliscommerce_orders_content_tabs_content_baskets_right_header',
-//                                                                            'melisKey' => 'meliscommerce_orders_content_tabs_content_baskets_right_header',
-//                                                                            'name' => 'tr_meliscommerce_orders_content_tabs_content_baskets_right_header',
-//                                                                        ],
-//                                                                        'forward' => [
-//                                                                            'module' => 'MelisCommerce',
-//                                                                            'controller' => 'MelisComOrder',
-//                                                                            'action' => 'render-orders-content-tabs-content-right-header',
-//                                                                        ],
-//                                                                        'interface' => [
-//
-//                                                                        ],
-//                                                                    ],
                                                                 ],
                                                             ],
                                                             'meliscommerce_orders_content_tabs_content_order_invoice_details' => [
