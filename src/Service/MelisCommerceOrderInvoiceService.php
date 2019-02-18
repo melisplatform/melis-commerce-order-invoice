@@ -60,6 +60,27 @@ class MelisCommerceOrderInvoiceService extends MelisCoreGeneralService
         }
     }
 
+    public function getInvoice($invoiceId) {
+        $arrayParameters = $this->makeArrayFromParameters(__METHOD__, func_get_args());
+        $arrayParameters = $this->sendEvent(
+            'meliscommerce_order_invoice_get_invoice_start',
+            $arrayParameters
+        );
+
+        //tables and services
+        $orderInvoiceTable = $this->getServiceLocator()->get('MelisCommerceOrderInvoiceTable');
+        $invoice = $orderInvoiceTable->getEntryById($arrayParameters['invoiceId'])->toArray()[0];
+
+        $arrayParameters['result'] = $invoice;
+
+        $arrayParameters = $this->sendEvent(
+            'meliscommerce_order_invoice_get_invoice_end',
+            $arrayParameters
+        );
+
+        return $arrayParameters['result'];
+    }
+
     /**
      * Generates the pdf using the html2pdf library
      * @param $orderId

@@ -10,13 +10,13 @@ class MelisCommerceOrderInvoiceController extends AbstractActionController
 {
     public function getOrderInvoiceAction()
     {
-        $orderId = $this->params()->fromPost('orderId', null);
+        $invoiceId = $this->params()->fromPost('invoiceId', null);
 
-        if (!is_null($orderId)) {
+        if (!is_null($invoiceId)) {
             $melisComAuthSrv = $this->getServiceLocator()->get('MelisComAuthenticationService');
             $orderInvoiceService = $this->getServiceLocator()->get('MelisCommerceOrderInvoiceService');
 
-            $invoice = $orderInvoiceService->getOrderInvoiceList($orderId, null, null, 'DESC')[0];
+            $invoice = $orderInvoiceService->getInvoice($invoiceId);
 
             // user id
             $clientId = $melisComAuthSrv->getClientId();
@@ -38,7 +38,7 @@ class MelisCommerceOrderInvoiceController extends AbstractActionController
             }
         } else {
             return new JsonModel([
-                'error' => 'No orderId'
+                'error' => 'Invoice ID required'
             ]);
         }
     }
