@@ -32,7 +32,7 @@
                                         'interface' => [
                                             'meliscommerce_orders_content_tabs' => [
                                                 'interface' => [
-                                                    'meliscommerce_orders_content_tab_messages' => [
+                                                    'meliscommerce_orders_content_tab_order_invoice' => [
                                                         'conf' => [
                                                             'id' => 'id_meliscommerce_orders_content_tab_order_invoice',
                                                             'melisKey' => 'meliscommerce_orders_content_tab_order_invoice',
