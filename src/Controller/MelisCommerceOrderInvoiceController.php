@@ -54,12 +54,12 @@ class MelisCommerceOrderInvoiceController extends AbstractActionController
                         }
                     } else {
                         return new JsonModel([
-                            'error' => 'Invoice doest not exist for this order'
+                            'error' => 'Invoiceid does not exist'
                         ]);
                     }
                 } else {
                     return new JsonModel([
-                        'error' => 'Invalid orderId passed'
+                        'error' => 'Invalid orderId'
                     ]);
                 }
             } else {
