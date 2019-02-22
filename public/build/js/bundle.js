@@ -34,15 +34,21 @@ $(function() {
      */
     $body.on("click", '.export-invoice-pdf', function () {
         let invoiceId = $(this).closest('tr').data('invoiceid');
-        let url = '/melis/MelisCommerceOrderInvoice/MelisCommerceOrderInvoice/exportInvoice?invoiceId=' + invoiceId;
+        let url = '/MelisCommerceOrderInvoice/getInvoice';
+        let params = 'invoiceId=' + invoiceId;
 
         melisCoreTool.pending('.export-invoice-pdf');
 
-        downloadFile(url, null, 'invoice.pdf',function() {
-            console.log('test');
-        });
-
-        melisCoreTool.done('.export-invoice-pdf');
+        downloadFile(
+            'POST',
+            url,
+            params, 
+            null, 
+            'invoice.pdf',
+            function() {
+                melisCoreTool.done('.export-invoice-pdf');
+            }
+        );
     });
 
     /**
@@ -50,21 +56,31 @@ $(function() {
      */
     $body.on("click", '.export-order-pdf', function () {
         let orderId = $(this).closest('tr').attr('id');
-        let url = '/melis/MelisCommerceOrderInvoice/MelisCommerceOrderInvoice/exportOrderInvoice?orderId=' + orderId;
+        let url = '/MelisCommerceOrderInvoice/getInvoice';
+        let params = null;
 
         melisCoreTool.pending(".export-order-pdf");
         // check first if there is an invoice for the order
         $.ajax({
             type: 'POST',
-            url: '/melis/MelisCommerceOrderInvoice/MelisCommerceOrderInvoice/checkForInvoice',
+            url: '/melis/MelisCommerceOrderInvoice/MelisCommerceOrderInvoice/getOrderLatestInvoiceId',
             data: {'orderId': orderId},
             dataType: 'json',
             encode: true,
         }).success(function (data) {
-            if (data.hasInvoice === true) {
-                downloadFile(url, null, 'invoice.pdf',function() {
-                    melisCoreTool.done('.export-order-pdf');
-                });
+            if (data.latestInvoiceId > 0) {
+                params = 'invoiceId=' + data.latestInvoiceId;
+
+                downloadFile(
+                    'POST', 
+                    url, 
+                    params, 
+                    null, 
+                    'invoice.pdf', 
+                    function() {
+                        melisCoreTool.done('.export-order-pdf');
+                    }
+                );
             } else {
                 melisHelper.melisKoNotification(
                     translations.tr_meliscommerce_order_invoice_export_prompt_title,
@@ -96,11 +112,19 @@ $(function() {
     /**
      * Download the file using XMLHttpRequest
      */
-    function downloadFile(url, type = 'application/pdf', fileName, callback) {
+    function downloadFile(requestType, url, params, type = 'application/pdf', fileName, onLoadCallback = null, callback = null) {
         let xhr = new XMLHttpRequest();
 
-        xhr.open('GET', url);
+        xhr.open(requestType, url);
         xhr.responseType = 'arraybuffer';
+
+        if (params !== null) {
+            xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            xhr.send(params);
+        } else {
+            xhr.send();
+        }
+
         xhr.onload = function(e) {
             if (this.status === 200) {
                 let blob = new Blob([this.response], {type:type});
@@ -109,11 +133,16 @@ $(function() {
                 link.href = window.URL.createObjectURL(blob);
                 link.download = fileName;
                 link.click();
+
+                if (onLoadCallback != undefined || onLoadCallback != null) {
+                    onLoadCallback();
+                }
             }
         };
-        xhr.send();
 
-        callback();
+        if (callback != undefined || callback != null) {
+            callback();
+        }
     }
 
     /**
