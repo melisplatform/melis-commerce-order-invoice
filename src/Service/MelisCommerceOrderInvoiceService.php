@@ -74,9 +74,10 @@ class MelisCommerceOrderInvoiceService extends MelisCoreGeneralService
             $arrayParameters
         );
 
-        $invoice = $this->getOrderInvoiceList($arrayParameters['orderId'], null, 1, 'DESC')[0];
+        $invoice = $this->getOrderInvoiceList($arrayParameters['orderId'], null, 1, 'DESC');
 
         if (!empty($invoice)) {
+            $invoice = $invoice[0];
             $arrayParameters['result'] = $invoice['ordin_id'];
         } else {
             $arrayParameters['result'] = 0;
