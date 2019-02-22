@@ -31,8 +31,12 @@ class MelisCommerceOrderDetailsInvoiceDataListener extends MelisCoreGeneralListe
 
                 $orderInvoiceService = $sm->get('MelisCommerceOrderInvoiceService');
 
-                $invoice = $orderInvoiceService->getOrderInvoiceList($orderId, null, $limit = 1, 'DESC')[0];
-                $invoice['url_to_download_pdf'] = '/MelisCommerceOrderInvoice/getInvoice';
+                $invoice = $orderInvoiceService->getOrderInvoiceList($orderId, null, $limit = 1, 'DESC');
+
+                if (!empty($invoice)) {
+                    $invoice = $invoice[0];
+                    $invoice['url_to_download_pdf'] = '/MelisCommerceOrderInvoice/getInvoice';
+                }
 
                 $params['orderInvoice'] = $invoice;
             });

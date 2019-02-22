@@ -27,7 +27,7 @@ class MelisCommerceOrderInvoiceService extends MelisCoreGeneralService
      * @param null $template
      * @return string
      */
-    private function html2pdf($order, $template = null)
+    private function html2pdf ($order, $template = null)
     {
         try {
             $viewRendererService = $this->getServiceLocator()->get('ViewRenderer');
@@ -60,7 +60,38 @@ class MelisCommerceOrderInvoiceService extends MelisCoreGeneralService
         }
     }
 
-    public function getInvoice($invoiceId) {
+    /**
+     * Returns the latest invoice id of an order or returns 0 if the order
+     * has no invoice yet
+     * @param $orderId
+     * @param null $template
+     * @return mixed
+     */
+    public function getOrderLatestInvoiceId ($orderId) {
+        $arrayParameters = $this->makeArrayFromParameters(__METHOD__, func_get_args());
+        $arrayParameters = $this->sendEvent(
+            'meliscommerce_order_invoice_get_latest_invoiceid_by_orderid_start',
+            $arrayParameters
+        );
+
+        $invoice = $this->getOrderInvoiceList($arrayParameters['orderId'], null, 1, 'DESC')[0];
+
+        if (!empty($invoice)) {
+            $arrayParameters['result'] = $invoice['ordin_id'];
+        } else {
+            $arrayParameters['result'] = 0;
+        }
+
+        $arrayParameters = $this->sendEvent(
+            'meliscommerce_order_invoice_get_latest_invoiceid_by_orderid_end',
+            $arrayParameters
+        );
+
+        return $arrayParameters['result'];
+    }
+
+
+    public function getInvoice ($invoiceId) {
         $arrayParameters = $this->makeArrayFromParameters(__METHOD__, func_get_args());
         $arrayParameters = $this->sendEvent(
             'meliscommerce_order_invoice_get_invoice_start',
@@ -87,7 +118,7 @@ class MelisCommerceOrderInvoiceService extends MelisCoreGeneralService
      * @param null $template
      * @return mixed
      */
-    public function generateOrderInvoice($orderId, $template = null)
+    public function generateOrderInvoice ($orderId, $template = null)
     {
         $arrayParameters = $this->makeArrayFromParameters(__METHOD__, func_get_args());
         $arrayParameters = $this->sendEvent(
@@ -143,7 +174,7 @@ class MelisCommerceOrderInvoiceService extends MelisCoreGeneralService
      * @param $orderId
      * @param int $limit
      */
-    public function getOrderInvoiceList($orderId, $start, $limit = 1, $order)
+    public function getOrderInvoiceList ($orderId, $start, $limit, $order)
     {
         $arrayParameters = $this->makeArrayFromParameters(__METHOD__, func_get_args());
 
@@ -177,7 +208,7 @@ class MelisCommerceOrderInvoiceService extends MelisCoreGeneralService
      * Returns the PDF contents of the invoice
      * @param $orderInvoiceId
      */
-    public function getOrderInvoice($invoiceId)
+    public function getOrderInvoice ($invoiceId)
     {
         $arrayParameters = $this->makeArrayFromParameters(__METHOD__, func_get_args());
 
@@ -205,7 +236,7 @@ class MelisCommerceOrderInvoiceService extends MelisCoreGeneralService
      * This will prepare the list of items along with the needed data for the invoice pdf
      * @param $order
      */
-    private function prepareOrderItems($order)
+    private function prepareOrderItems ($order)
     {
         $data = [];
         $basket = $order->getBasket();
@@ -276,7 +307,7 @@ class MelisCommerceOrderInvoiceService extends MelisCoreGeneralService
      * @param $subTotal
      * @return array
      */
-    private function getCouponDetails($orderCoupons, $subTotal) {
+    private function getCouponDetails ($orderCoupons, $subTotal) {
         $couponDetails = array();
 
         if (!empty($orderCoupons)) {
@@ -306,7 +337,7 @@ class MelisCommerceOrderInvoiceService extends MelisCoreGeneralService
      * @param $item
      * @return float|int
      */
-    private function getItemDiscount($orderCoupons, $item) {
+    private function getItemDiscount ($orderCoupons, $item) {
         $discount = 0;
 
         if (!empty($orderCoupons)) {
@@ -334,7 +365,7 @@ class MelisCommerceOrderInvoiceService extends MelisCoreGeneralService
      * @param $orderId
      * @return array
      */
-    private function getCoupons($orderId) {
+    private function getCoupons ($orderId) {
         $couponSvc = $this->getServiceLocator()->get('MelisComCouponService');
         $orderCoupons = $couponSvc->getCouponList($orderId);
         $coupons = array();
@@ -358,7 +389,7 @@ class MelisCommerceOrderInvoiceService extends MelisCoreGeneralService
      * @param $order
      * @return int
      */
-    private function getShippingCost($order)
+    private function getShippingCost ($order)
     {
         $shipping = 0;
 
@@ -376,7 +407,7 @@ class MelisCommerceOrderInvoiceService extends MelisCoreGeneralService
      * @param $currId
      * @return mixed
      */
-    private function getCurrency($currId)
+    private function getCurrency ($currId)
     {
         $currTbl = $this->getServiceLocator()->get('MelisEcomCurrencyTable');
         $curr = $currTbl->getEntryById($currId)->toArray()[0];

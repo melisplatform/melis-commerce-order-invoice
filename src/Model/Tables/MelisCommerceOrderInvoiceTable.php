@@ -25,12 +25,6 @@ class MelisCommerceOrderInvoiceTable extends MelisEcomGenericTable
         $this->idField = 'ordin_id';
     }
 
-    public function test()
-    {
-        print_r('lawl');
-        exit;
-    }
-
     public function getOrderInvoiceList($orderId, $start, $limit, $order)
     {
         $select = $this->tableGateway->getSql()->select();
@@ -51,11 +45,6 @@ class MelisCommerceOrderInvoiceTable extends MelisEcomGenericTable
         $resultData = $this->tableGateway->selectWith($select);
 
         return $resultData;
-    }
-
-    public function generateOrderInvoice()
-    {
-
     }
 
     public function saveInvoice($set)

@@ -5,42 +5,84 @@ namespace MelisCommerceOrderInvoice\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Zend\View\Model\JsonModel;
+use Zend\Session\Container;
 
 class MelisCommerceOrderInvoiceController extends AbstractActionController
 {
     public function getOrderInvoiceAction()
     {
         $invoiceId = $this->params()->fromPost('invoiceId', null);
+        $melisCoreAuthSrv = $this->getServiceLocator()->get('MelisCoreAuth');
 
-        if (!is_null($invoiceId)) {
-            $melisComAuthSrv = $this->getServiceLocator()->get('MelisComAuthenticationService');
+        if ($melisCoreAuthSrv->hasIdentity()) {
             $orderInvoiceService = $this->getServiceLocator()->get('MelisCommerceOrderInvoiceService');
-
             $invoice = $orderInvoiceService->getInvoice($invoiceId);
 
-            // user id
-            $clientId = $melisComAuthSrv->getClientId();
-            //$personId = $melisComAuthSrv->getPersonId();
+            $response = $this->prepareResponse($invoice['ordin_invoice_pdf']);
 
-            if ($invoice['ordin_user_id'] == $clientId) {
-                $response = $this->prepareResponse($invoice['ordin_invoice_pdf']);
+            $view = new ViewModel();
+            $view->setTerminal(true);
+            $view->setTemplate('export-invoice');
+            $view->content = $response->getContent();
 
-                $view = new ViewModel();
-                $view->setTerminal(true);
-                $view->setTemplate('export-invoice');
-                $view->content = $response->getContent();
+            return $view;
+        } else {
+            $melisComAuthSrv = $this->getServiceLocator()->get('MelisComAuthenticationService');
 
-                return $view;
+            if ($melisComAuthSrv->hasIdentity()) {
+                if (!is_null($invoiceId) && $invoiceId != 0) {
+                    $orderInvoiceService = $this->getServiceLocator()->get('MelisCommerceOrderInvoiceService');
+                    $invoice = $orderInvoiceService->getInvoice($invoiceId);
+
+                    if (!empty($invoice)) {
+                        $clientId = $melisComAuthSrv->getClientId();
+                        //$personId = $melisComAuthSrv->getPersonId();
+
+                        if ($invoice['ordin_user_id'] == $clientId) {
+                            $response = $this->prepareResponse($invoice['ordin_invoice_pdf']);
+
+                            $view = new ViewModel();
+                            $view->setTerminal(true);
+                            $view->setTemplate('export-invoice');
+                            $view->content = $response->getContent();
+
+                            return $view;
+                        } else {
+                            return new JsonModel([
+                                'error' => 'You don\'t own this invoice'
+                            ]);
+                        }
+                    } else {
+                        return new JsonModel([
+                            'error' => 'Invoice doest not exist for this order'
+                        ]);
+                    }
+                } else {
+                    return new JsonModel([
+                        'error' => 'Invalid orderId passed'
+                    ]);
+                }
             } else {
                 return new JsonModel([
-                   'error' => 'You don\'t have permission to get this invoice'
+                    'error' => 'You have to be authenticated to the site to access this'
                 ]);
             }
-        } else {
-            return new JsonModel([
-                'error' => 'Invoice ID required'
-            ]);
         }
+    }
+
+    public function getOrderLatestInvoiceIdAction () {
+        $orderId = $this->params()->fromPost('orderId', null);
+        $latestInvoiceId = 0;
+
+        if (!is_null($orderId) && $orderId != 0) {
+            $orderInvoiceService = $this->getServiceLocator()->get('MelisCommerceOrderInvoiceService');
+
+            $latestInvoiceId = $orderInvoiceService->getOrderLatestInvoiceId($orderId);
+        }
+
+        return new JsonModel([
+            'latestInvoiceId' => $latestInvoiceId
+        ]); 
     }
 
     public function checkForInvoiceAction()
