@@ -132,7 +132,7 @@ class MelisCommerceOrderInvoiceService extends MelisCoreGeneralService
         $ordersService = $this->getServiceLocator()->get('MelisComOrderService');
 
         //order data
-        $order = $ordersService->getOrderById($orderId);
+        $order = $ordersService->getOrderById($arrayParameters['orderId']);
 
         //client data & client ID
         $clientData = $order->getClient();
@@ -152,7 +152,7 @@ class MelisCommerceOrderInvoiceService extends MelisCoreGeneralService
         $this->invoiceId = $invoiceId;
 
         //get pdf output
-        $pdfContents = $this->html2pdf($order, $template);
+        $pdfContents = $this->html2pdf($order, $arrayParameters['template']);
 
         //update invoice with the correct pdf
         $orderInvoiceTable->save([
