@@ -138,28 +138,27 @@ class MelisCommerceOrderInvoiceService extends MelisCoreGeneralService
         $clientData = $order->getClient();
         $clientId = $clientData->cli_id;
 
+        //date created, this will also be used in the pdf
         $this->date = date("Y-m-d H:i:s");
 
-        //save invoice
+        //save invoice to get the ID
         $invoiceId = $orderInvoiceTable->save([
             'ordin_user_id' => $clientId,
             'ordin_order_id' => $order->getId(),
             'ordin_date_generated' => $this->date,
-            'ordin_invoice_pdf' => 'test'
+            'ordin_invoice_pdf' => 'this will be overwritten'
         ]);
 
         $this->invoiceId = $invoiceId;
 
         //get pdf output
-        $pdfContents = $this->html2pdf($order, null);
+        $pdfContents = $this->html2pdf($order, $template);
 
-        //update invoice
+        //update invoice with the correct pdf
         $orderInvoiceTable->save([
             'ordin_invoice_pdf' => $pdfContents
         ], $invoiceId);
 
-
-        //logic here
         $arrayParameters['results'] = $invoiceId;
 
         $arrayParameters = $this->sendEvent(
