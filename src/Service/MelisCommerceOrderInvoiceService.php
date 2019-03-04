@@ -36,8 +36,8 @@ class MelisCommerceOrderInvoiceService extends MelisCoreGeneralService
             $view = new ViewModel();
             $view->invoiceDate = $this->date;
             $view->invoiceNumber = $this->invoiceId;
+            $view->order = $order;
             $view->data = $data;
-            $view->addresses = $order->getAddresses();
 
             if (is_null($template)) {
                 $view->setTemplate('orderinvoicetemplate/default');
@@ -45,19 +45,22 @@ class MelisCommerceOrderInvoiceService extends MelisCoreGeneralService
                 $view->setTemplate($template);
             }
 
+            // YOU CAN USE THIS EVENT TO OVERRIDE THE VIEW
+            $this->sendEvent('meliscommerceorderinvoice_pdf_view', ['view' => $view]);
+
             $contents = $viewRendererService->render($view);
 
             $html2pdf = new Html2Pdf('P', 'A4', 'en');
             $html2pdf->writeHTML($contents);
             $pdf = $html2pdf->output('', 'S');
-
-            return $pdf;
         } catch (Html2PdfException $e) {
             $html2pdf->clean();
             $formatter = new ExceptionFormatter($e);
 
             echo $formatter->getHtmlMessage();
         }
+
+        return $pdf;
     }
 
     /**
@@ -151,7 +154,6 @@ class MelisCommerceOrderInvoiceService extends MelisCoreGeneralService
 
         $this->invoiceId = $invoiceId;
 
-        //get pdf output
         $pdfContents = $this->html2pdf($order, $arrayParameters['template']);
 
         //update invoice with the correct pdf
@@ -245,7 +247,6 @@ class MelisCommerceOrderInvoiceService extends MelisCoreGeneralService
         $orderCoupons = $this->getCoupons($order->getId());
         $shipping = $this->getShippingCost($order);
         $totalCouponDiscount = 0;
-        $total = 0;
 
         // PREPARE ORDER ITEMS DATA & SUBTOTAL
         foreach ($basket as $item) {
@@ -280,7 +281,7 @@ class MelisCommerceOrderInvoiceService extends MelisCoreGeneralService
         foreach ($coupons as $coupon) {
             $data['coupons'][] = [
                 'code' => '(' . $coupon['couponCode'] . ') ',
-                'discount' => '-' . $currency['cur_symbol'] . number_format($coupon['couponDiscount'], 2)
+                'discount' => '- ' . $currency['cur_symbol'] . number_format($coupon['couponDiscount'], 2)
             ];
 
             $totalCouponDiscount += $coupon['couponDiscount'];

@@ -17,7 +17,7 @@
                     'meliscommerce_order_invoice_list' => [
                         'table' => [
                             'target' => '#tableOrderInvoiceList',
-                            'ajaxUrl' => 'melis/MelisCommerceOrderInvoice/MelisCommerceOrderInvoice/getOrderInvoiceList',
+                            'ajaxUrl' => '/melis/MelisCommerceOrderInvoice/MelisCommerceOrderInvoice/getOrderInvoiceList',
                             'dataFunction' => 'initOrderInvoiceTable',
                             'ajaxCallback' => '',
                             'filters' => [

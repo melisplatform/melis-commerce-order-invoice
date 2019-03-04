@@ -9,6 +9,10 @@ use Zend\Session\Container;
 
 class MelisCommerceOrderInvoiceController extends AbstractActionController
 {
+    /**
+     * Returns the pdf contents
+     * @return JsonModel|ViewModel
+     */
     public function getOrderInvoiceAction()
     {
         $invoiceId = $this->params()->fromPost('invoiceId', null);
@@ -70,6 +74,10 @@ class MelisCommerceOrderInvoiceController extends AbstractActionController
         }
     }
 
+    /**
+     * Returns latest invoice id for an order
+     * @return JsonModel
+     */
     public function getOrderLatestInvoiceIdAction () {
         $orderId = $this->params()->fromPost('orderId', null);
         $latestInvoiceId = 0;
@@ -85,62 +93,10 @@ class MelisCommerceOrderInvoiceController extends AbstractActionController
         ]); 
     }
 
-    public function checkForInvoiceAction()
-    {
-        $hasInvoice = false;
-        $orderInvoiceTable = $this->getServiceLocator()->get('MelisCommerceOrderInvoiceTable');
-
-        $orderId = $this->params()->fromPost('orderId');
-
-        // *NOTE* change this one to use the service
-        $invoice = $orderInvoiceTable->getEntryByField('ordin_order_id', $orderId)->toArray();
-
-        if (!empty($invoice)) {
-            $hasInvoice = true;
-        }
-
-        return new JsonModel([
-            'hasInvoice' => $hasInvoice
-        ]);
-    }
-
-    public function exportInvoiceAction()
-    {
-        $invoiceId = $this->params()->fromQuery('invoiceId');
-        $orderInvoiceService = $this->getServiceLocator()->get('MelisCommerceOrderInvoiceService');
-
-        $pdf = $orderInvoiceService->getOrderInvoice($invoiceId);
-
-        $response = $this->prepareResponse($pdf);
-
-        $view = new ViewModel();
-        $view->setTerminal(true);
-        $view->setTemplate('export-invoice');
-        $view->content = $response->getContent();
-
-        return $view;
-    }
-
-    public function exportOrderInvoiceAction()
-    {
-        $orderInvoiceTable = $this->getServiceLocator()->get('MelisCommerceOrderInvoiceTable');
-
-        $orderId = $this->params()->fromQuery('orderId');
-
-        // *NOTE* change this one to use the service
-        $invoice = $orderInvoiceTable->getEntryByField('ordin_order_id', $orderId)->toArray();
-        $invoice = array_pop($invoice);
-
-        $response = $this->prepareResponse($invoice['ordin_invoice_pdf']);
-
-        $view = new ViewModel();
-        $view->setTerminal(true);
-        $view->setTemplate('export-invoice');
-        $view->content = $response->getContent();
-
-        return $view;
-    }
-
+    /**
+     * Handles the generation of invoices
+     * @return JsonModel
+     */
     public function generateOrderInvoiceAction()
     {
         $orderInvoiceService = $this->getServiceLocator()->get('MelisCommerceOrderInvoiceService');
@@ -153,6 +109,10 @@ class MelisCommerceOrderInvoiceController extends AbstractActionController
         ]);
     }
 
+    /**
+     * Renders the invoice list
+     * @return ViewModel
+     */
     public function renderOrdersContentTabsContentOrderInvoiceListAction()
     {
         $columns = $this->getTool('meliscommerce', 'meliscommerce_order_invoice_list')->getColumns();
@@ -176,19 +136,21 @@ class MelisCommerceOrderInvoiceController extends AbstractActionController
         return $view;
     }
 
+    /**
+     * Returns the data for the invoice list
+     * @return JsonModel
+     */
     public function getOrderInvoiceListAction()
     {
         $draw = 0;
         $tableData = [];
 
-        $orderInvoiceTable = $this->getServiceLocator()->get('MelisCommerceOrderInvoiceTable');
         $orderInvoiceService = $this->getServiceLocator()->get('MelisCommerceOrderInvoiceService');
 
         if ($this->getRequest()->isPost()) {
             $draw = (int) $this->getRequest()->getPost('draw');
             $start = (int) $this->getRequest()->getPost('start');
             $limit =  (int) $this->getRequest()->getPost('length');
-            $postValues = $this->getRequest()->getPost();
             $orderId = $this->getRequest()->getPost('orderId');
 
             $allOrderInvoiceList = $orderInvoiceService->getOrderInvoiceList($orderId, null, null, null);
@@ -213,6 +175,11 @@ class MelisCommerceOrderInvoiceController extends AbstractActionController
         ]);
     }
 
+    /**
+     * @param $pdfContents
+     * @param string $fileName
+     * @return \Zend\Stdlib\ResponseInterface
+     */
     private function prepareResponse($pdfContents, $fileName = 'invoice.pdf')
     {
         $response = $this->getResponse();
@@ -229,6 +196,12 @@ class MelisCommerceOrderInvoiceController extends AbstractActionController
         return $response;
     }
 
+    /**
+     * Returns the melis tool
+     * @param $module
+     * @param $melistoolkey
+     * @return array|object
+     */
     private function getTool($module, $melistoolkey)
     {
         $melisTool = $this->getServiceLocator()->get('MelisCoreTool');

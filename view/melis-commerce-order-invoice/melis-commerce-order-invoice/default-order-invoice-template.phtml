@@ -122,7 +122,7 @@
                 <td>&nbsp;</td>
             </tr>
 
-            <?php foreach ($this->addresses as $address) { ?>
+            <?php foreach ($this->order->getAddresses() as $address) { ?>
                 <?php if ($address->oadd_type == 1) { ?>
                     <?php $billingAddress = $address ?>
                     <?php break; ?>
