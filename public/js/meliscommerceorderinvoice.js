@@ -129,10 +129,11 @@ $(function() {
             if (this.status === 200) {
                 let blob = new Blob([this.response], {type:type});
                 let link = document.createElement('a');
+                let downloadUrl = window.URL.createObjectURL(blob);
 
-                link.href = window.URL.createObjectURL(blob);
+                link.href = downloadUrl;
                 link.download = fileName;
-                link.click();
+                link.dispatchEvent(new MouseEvent(`click`, {bubbles: true, cancelable: true, view: window}));
 
                 if (onLoadCallback != undefined || onLoadCallback != null) {
                     onLoadCallback();
