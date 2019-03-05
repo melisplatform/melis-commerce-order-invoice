@@ -47,13 +47,13 @@ return array(
             'melis-commerce-order-invoice' => [
                 'type' => 'Literal',
                 'options' => [
-                    'route' => '/MelisCommerceOrderInvoice/getInvoice',
+                    'route' => '/CommerceOrderInvoice/getInvoice',
                     'defaults' => [
                         '__NAMESPACE__' => 'MelisCommerceOrderInvoice\Controller',
                         'controller' => 'MelisCommerceOrderInvoice',
                         'action' => 'getOrderInvoice'
                     ],
-                ],
+                ]
             ],
         ),
     ),

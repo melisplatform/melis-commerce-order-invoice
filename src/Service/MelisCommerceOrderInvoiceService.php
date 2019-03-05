@@ -104,9 +104,9 @@ class MelisCommerceOrderInvoiceService extends MelisCoreGeneralService
 
         //tables and services
         $orderInvoiceTable = $this->getServiceLocator()->get('MelisCommerceOrderInvoiceTable');
-        $invoice = $orderInvoiceTable->getEntryById($arrayParameters['invoiceId'])->toArray()[0];
+        $invoice = $orderInvoiceTable->getEntryById($arrayParameters['invoiceId'])->toArray();
 
-        $arrayParameters['result'] = $invoice;
+        $arrayParameters['result'] = !empty($invoice) ? $invoice[0] : '';
 
         $arrayParameters = $this->sendEvent(
             'meliscommerce_order_invoice_get_invoice_end',

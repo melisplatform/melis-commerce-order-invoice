@@ -34,7 +34,7 @@ $(function() {
      */
     $body.on("click", '.export-invoice-pdf', function () {
         let invoiceId = $(this).closest('tr').data('invoiceid');
-        let url = '/MelisCommerceOrderInvoice/getInvoice';
+        let url = '/melis/MelisCommerceOrderInvoice/MelisCommerceOrderInvoice/getOrderInvoice';
         let params = 'invoiceId=' + invoiceId;
 
         melisCoreTool.pending('.export-invoice-pdf');
@@ -56,7 +56,7 @@ $(function() {
      */
     $body.on("click", '.export-order-pdf', function () {
         let orderId = $(this).closest('tr').attr('id');
-        let url = '/MelisCommerceOrderInvoice/getInvoice';
+        let url = '/melis/MelisCommerceOrderInvoice/MelisCommerceOrderInvoice/getOrderInvoice';
         let params = null;
 
         melisCoreTool.pending(".export-order-pdf");

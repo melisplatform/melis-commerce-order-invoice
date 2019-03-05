@@ -3,12 +3,19 @@
 namespace MelisCommerceOrderInvoice\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\Authentication\AuthenticationService;
 use Zend\View\Model\ViewModel;
 use Zend\View\Model\JsonModel;
 use Zend\Session\Container;
 
 class MelisCommerceOrderInvoiceController extends AbstractActionController
 {
+    public function testAction() {
+        $auth = new AuthenticationService();
+
+        var_dump(! $auth->getStorage()->isEmpty());
+        exit;
+    }
     /**
      * Returns the pdf contents
      * @return JsonModel|ViewModel
@@ -16,21 +23,26 @@ class MelisCommerceOrderInvoiceController extends AbstractActionController
     public function getOrderInvoiceAction()
     {
         $invoiceId = $this->params()->fromPost('invoiceId', null);
-        $melisCoreAuthSrv = $this->getServiceLocator()->get('MelisCoreAuth');
 
-        if ($melisCoreAuthSrv->hasIdentity()) {
-            $orderInvoiceService = $this->getServiceLocator()->get('MelisCommerceOrderInvoiceService');
-            $invoice = $orderInvoiceService->getInvoice($invoiceId);
+        try {
+            // FOR BACKOFFICE
+            $melisCoreAuthSrv = $this->getServiceLocator()->get('MelisCoreAuth');
 
-            $response = $this->prepareResponse($invoice['ordin_invoice_pdf']);
+            if ($melisCoreAuthSrv->hasIdentity()) {
+                $orderInvoiceService = $this->getServiceLocator()->get('MelisCommerceOrderInvoiceService');
+                $invoice = $orderInvoiceService->getInvoice($invoiceId);
 
-            $view = new ViewModel();
-            $view->setTerminal(true);
-            $view->setTemplate('export-invoice');
-            $view->content = $response->getContent();
+                $response = $this->prepareResponse($invoice['ordin_invoice_pdf']);
 
-            return $view;
-        } else {
+                $view = new ViewModel();
+                $view->setTerminal(true);
+                $view->setTemplate('export-invoice');
+                $view->content = $response->getContent();
+
+                return $view;
+            }
+        } catch (\Exception $e) {
+            // FOR FRONT
             $melisComAuthSrv = $this->getServiceLocator()->get('MelisComAuthenticationService');
 
             if ($melisComAuthSrv->hasIdentity()) {
