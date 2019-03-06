@@ -16,7 +16,6 @@ use Zend\Session\Container;
 
 use MelisCommerceOrderInvoice\Listener\MelisCommerceOrderInvoiceGenerateInvoiceListener;
 use MelisCommerceOrderInvoice\Listener\MelisCommerceOrderDetailsInvoiceDataListener;
-use MelisCommerceOrderInvoice\Listener\MelisCommerceOrderHistoryInvoiceDataListener;
 
 class Module
 {
@@ -28,29 +27,8 @@ class Module
 
         $this->createTranslations($e);
 
-//        $sm = $e->getApplication()->getServiceManager();
-//        $routeMatch = $sm->get('router')->match($sm->get('request'));
-//        if (!empty($routeMatch))
-//        {
-//            $routeName = $routeMatch->getMatchedRouteName();
-//            $module = explode('/', $routeName);
-//
-//            if (!empty($module[0]))
-//            {
-//                if ($module[0] == 'melis-backoffice')
-//                {
-//                    $eventManager->getSharedManager()->attach(__NAMESPACE__,
-//                        MvcEvent::EVENT_DISPATCH, function($e) {
-//                            $e->getTarget()->layout('layout/layoutMelisPageHistoric');
-//                        });
-//
-                    $eventManager->attach(new MelisCommerceOrderInvoiceGenerateInvoiceListener());
-                    $eventManager->attach(new MelisCommerceOrderDetailsInvoiceDataListener());
-                    $eventManager->attach(new MelisCommerceOrderHistoryInvoiceDataListener());
-//                    $eventManager->attach(new MelisPageHistoricPageEventListener());
-//                }
-//            }
-//        }
+        $eventManager->attach(new MelisCommerceOrderInvoiceGenerateInvoiceListener());
+        $eventManager->attach(new MelisCommerceOrderDetailsInvoiceDataListener());
     }
 
     public function getConfig()
