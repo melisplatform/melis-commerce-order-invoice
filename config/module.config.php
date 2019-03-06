@@ -44,7 +44,18 @@ return array(
                     ),
                 ),
             ),
-            'melis-commerce-order-invoice' => [
+            'MelisCommerceOrderInvoiceCheckInvoice' => [
+                'type' => 'Literal',
+                'options' => [
+                    'route' => '/CommerceOrderInvoice/getOrderLatestInvoiceId',
+                    'defaults' => [
+                        '__NAMESPACE__' => 'MelisCommerceOrderInvoice\Controller',
+                        'controller' => 'MelisCommerceOrderInvoice',
+                        'action' => 'getOrderLatestInvoiceId'
+                    ],
+                ],
+            ],
+            'MelisCommerceOrderInvoiceDownloadInvoice' => [
                 'type' => 'Literal',
                 'options' => [
                     'route' => '/CommerceOrderInvoice/getInvoice',
@@ -53,7 +64,7 @@ return array(
                         'controller' => 'MelisCommerceOrderInvoice',
                         'action' => 'getOrderInvoice'
                     ],
-                ]
+                ],
             ],
         ),
     ),
