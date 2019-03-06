@@ -10,12 +10,6 @@ use Zend\Session\Container;
 
 class MelisCommerceOrderInvoiceController extends AbstractActionController
 {
-    public function testAction() {
-        $auth = new AuthenticationService();
-
-        var_dump(! $auth->getStorage()->isEmpty());
-        exit;
-    }
     /**
      * Returns the pdf contents
      * @return JsonModel|ViewModel
