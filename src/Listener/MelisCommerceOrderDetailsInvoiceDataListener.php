@@ -35,7 +35,7 @@ class MelisCommerceOrderDetailsInvoiceDataListener extends MelisCoreGeneralListe
 
                 if (!empty($invoice)) {
                     $invoice = $invoice[0];
-                    $invoice['url_to_download_pdf'] = '/MelisCommerceOrderInvoice/getInvoice';
+                    $invoice['url_to_download_pdf'] = '/CommerceOrderInvoice/getInvoice';
                 }
 
                 $params['orderInvoice'] = $invoice;
