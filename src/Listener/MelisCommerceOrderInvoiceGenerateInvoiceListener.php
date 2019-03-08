@@ -36,7 +36,7 @@ class MelisCommerceOrderInvoiceGenerateInvoiceListener extends MelisCoreGeneralL
 
                     if ($orderStatus[0]->osta_id == 1) {
                         $orderInvoiceService = $sm->get('MelisCommerceOrderInvoiceService');
-                        $invoiceId = $orderInvoiceService->generateOrderInvoice($orderId, null);
+                        $invoiceId = $orderInvoiceService->generateOrderInvoice($orderId, 'orderinvoicetemplate/default');
                     }
                 }
             },

@@ -76,6 +76,7 @@ return array(
 
         ),
         'aliases' => array(
+            'translator' => 'MvcTranslator',
             'MelisCommerceOrderInvoiceTable' => 'MelisCommerceOrderInvoice\Model\Tables\MelisCommerceOrderInvoiceTable'
         ),
         'factories' => array(

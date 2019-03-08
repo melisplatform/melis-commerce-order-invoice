@@ -14,12 +14,14 @@ use Spipu\Html2Pdf\Html2Pdf;
 use Spipu\Html2Pdf\Exception\Html2PdfException;
 use Spipu\Html2Pdf\Exception\ExceptionFormatter;
 use Zend\View\Model\ViewModel;
-use Zend\Http\Request as HttpRequest;
+use Zend\I18n\Translator\Translator;
 
 class MelisCommerceOrderInvoiceService extends MelisCoreGeneralService
 {
     protected $invoiceId;
     protected $date;
+    protected $clientLangId;
+    protected $clientLangLocale;
 
     /**
      * html2pdf library - converts html to pdf
@@ -27,24 +29,26 @@ class MelisCommerceOrderInvoiceService extends MelisCoreGeneralService
      * @param null $template
      * @return string
      */
-    private function html2pdf ($order, $template = null)
+    private function html2pdf ($order, $template)
     {
         try {
             $viewRendererService = $this->getServiceLocator()->get('ViewRenderer');
-            $data = $this->prepareOrderItems($order);
+            $data = $this->prepareData($order);
 
             $view = new ViewModel();
-            $view->invoiceDate = $this->date;
             $view->invoiceNumber = $this->invoiceId;
             $view->order = $order;
             $view->data = $data;
+            $view->date = $this->date;
+            // THIS COULD BE OVERRIDDEN ON THE MODULE CONFIG
+            $view->setTemplate($template);
+            $view->clientLangLocale = $this->clientLangLocale;
 
-            if (is_null($template)) {
-                $view->setTemplate('orderinvoicetemplate/default');
-            } else {
-                $view->setTemplate($template);
-            }
+            //new translator depends on the client's locale
+            $translator = new Translator();
+            $translator->addTranslationFile('phparray', __DIR__ . '/../../language/' . $this->clientLangLocale . '.interface.php', 'default', $this->clientLangLocale);
 
+            $view->textTranslator = $translator;
             // YOU CAN USE THIS EVENT TO OVERRIDE THE VIEW
             $this->sendEvent('meliscommerceorderinvoice_pdf_view', ['view' => $view]);
 
@@ -94,7 +98,11 @@ class MelisCommerceOrderInvoiceService extends MelisCoreGeneralService
         return $arrayParameters['result'];
     }
 
-
+    /**
+     * Returns an invoice based on the invoice id
+     * @param $invoiceId
+     * @return mixed
+     */
     public function getInvoice ($invoiceId) {
         $arrayParameters = $this->makeArrayFromParameters(__METHOD__, func_get_args());
         $arrayParameters = $this->sendEvent(
@@ -122,7 +130,7 @@ class MelisCommerceOrderInvoiceService extends MelisCoreGeneralService
      * @param null $template
      * @return mixed
      */
-    public function generateOrderInvoice ($orderId, $template = null)
+    public function generateOrderInvoice ($orderId, $template)
     {
         $arrayParameters = $this->makeArrayFromParameters(__METHOD__, func_get_args());
         $arrayParameters = $this->sendEvent(
@@ -133,22 +141,24 @@ class MelisCommerceOrderInvoiceService extends MelisCoreGeneralService
         //tables and services
         $orderInvoiceTable = $this->getServiceLocator()->get('MelisCommerceOrderInvoiceTable');
         $ordersService = $this->getServiceLocator()->get('MelisComOrderService');
-
+        $melisEcomLangTable = $this->getServiceLocator()->get('MelisEcomLangTable');
         //order data
         $order = $ordersService->getOrderById($arrayParameters['orderId']);
-
         //client data & client ID
         $clientData = $order->getClient();
         $clientId = $clientData->cli_id;
+        $this->clientLangId = $order->getPerson()->cper_lang_id;
+        $this->clientLangLocale = $melisEcomLangTable->getEntryById($this->clientLangId)->toArray()[0]['elang_locale'];
 
+        $dateFormat = explode(" ", $this->getDateFormatByLocate($this->clientLangLocale))[0];
         //date created, this will also be used in the pdf
-        $this->date = date("Y-m-d H:i:s");
+        $this->date = strftime($dateFormat, strtotime(date("Y-m-d H:i:s")));
 
         //save invoice to get the ID
         $invoiceId = $orderInvoiceTable->save([
             'ordin_user_id' => $clientId,
             'ordin_order_id' => $order->getId(),
-            'ordin_date_generated' => $this->date,
+            'ordin_date_generated' => date("Y-m-d H:i:s"),
             'ordin_invoice_pdf' => 'this will be overwritten'
         ]);
 
@@ -238,7 +248,7 @@ class MelisCommerceOrderInvoiceService extends MelisCoreGeneralService
      * This will prepare the list of items along with the needed data for the invoice pdf
      * @param $order
      */
-    private function prepareOrderItems ($order)
+    private function prepareData ($order)
     {
         $data = [];
         $basket = $order->getBasket();
@@ -247,6 +257,7 @@ class MelisCommerceOrderInvoiceService extends MelisCoreGeneralService
         $orderCoupons = $this->getCoupons($order->getId());
         $shipping = $this->getShippingCost($order);
         $totalCouponDiscount = 0;
+        $hasItemDiscount = false;
 
         // PREPARE ORDER ITEMS DATA & SUBTOTAL
         foreach ($basket as $item) {
@@ -254,20 +265,19 @@ class MelisCommerceOrderInvoiceService extends MelisCoreGeneralService
 
             $data['items'][] = [
                 'obas_product_name' => $item->obas_product_name,
-                'obas_price_net' => $currency['cur_symbol'] .
-                    number_format(
-                        $item->obas_price_net,
-                        2
-                    ),
                 'obas_quantity' => $item->obas_quantity,
-                'discount' => $discount > 0 ? $currency['cur_symbol'] . $discount : '',
                 'currency' => $currency['cur_symbol'],
-                'amount' => $currency['cur_symbol'] .
-                    number_format(
-                        ($item->obas_price_net - $discount) * $item->obas_quantity,
-                        2
-                    )
+                'obas_price_net' => $this->formatPrice($currency['cur_symbol'], $item->obas_price_net),
+                'discount' => $discount > 0 ? $this->formatPrice($currency['cur_symbol'], $discount) : '',
+                'amount' => $this->formatPrice(
+                    $currency['cur_symbol'],
+                    ($item->obas_price_net - $discount) * $item->obas_quantity
+                )
             ];
+
+            if ($discount > 0) {
+                $hasItemDiscount = true;
+            }
 
             $subtotal += number_format(
                 ($item->obas_price_net - $discount) * $item->obas_quantity,
@@ -281,15 +291,16 @@ class MelisCommerceOrderInvoiceService extends MelisCoreGeneralService
         foreach ($coupons as $coupon) {
             $data['coupons'][] = [
                 'code' => '(' . $coupon['couponCode'] . ') ',
-                'discount' => '- ' . $currency['cur_symbol'] . number_format($coupon['couponDiscount'], 2)
+                'discount' => '- ' . $this->formatPrice($currency['cur_symbol'], $coupon['couponDiscount'])
             ];
 
             $totalCouponDiscount += $coupon['couponDiscount'];
         }
 
         // PREPARE FINAL DATA
-        $data['subtotal'] = $currency['cur_symbol'] . number_format($subtotal, 2);
-        $data['shipping'] = $shipping > 0 ? $currency['cur_symbol'] . number_format($shipping, 2) : '';
+        $data['hasItemDiscount'] = $hasItemDiscount;
+        $data['subtotal'] = $this->formatPrice($currency['cur_symbol'],$subtotal);
+        $data['shipping'] = $shipping > 0 ? $this->formatPrice($currency['cur_symbol'], $shipping) : '';
 
         if ($totalCouponDiscount >= $subtotal) {
             $total = $shipping;
@@ -297,7 +308,7 @@ class MelisCommerceOrderInvoiceService extends MelisCoreGeneralService
             $total = ($subtotal - $totalCouponDiscount) + $shipping;
         }
 
-        $data['total'] = $currency['cur_symbol'] . number_format($total, 2);
+        $data['total'] = $this->formatPrice($currency['cur_symbol'],$total);
 
         return $data;
     }
@@ -414,5 +425,44 @@ class MelisCommerceOrderInvoiceService extends MelisCoreGeneralService
         $curr = $currTbl->getEntryById($currId)->toArray()[0];
 
         return $curr;
+    }
+
+    /**
+     * Returns formatted price based on the client's language
+     * @param $currency
+     * @param $price
+     * @return mixed|string
+     */
+    private function formatPrice ($currency, $price) {
+        $price = number_format($price, 2);
+
+        if ($this->clientLangLocale == 'fr_FR') {
+            $formattedPrice = str_replace('.', ',', (string) $price) . $currency;
+        } else {
+            $formattedPrice = $currency . $price;
+        }
+
+        return $formattedPrice;
+    }
+
+    /**
+     * Returns the date format depending on what locale
+     * @param String $locale
+     * @return string
+     */
+    private function getDateFormatByLocate($locale = en_EN)
+    {
+        $dFormat = '';
+        switch($locale) {
+            case 'fr_FR':
+                $dFormat = '%d/%m/%Y %H:%M:%S';
+                break;
+            case 'en_EN':
+            default:
+                $dFormat = '%m/%d/%Y %H:%M:%S';
+                break;
+        }
+
+        return $dFormat;
     }
 }

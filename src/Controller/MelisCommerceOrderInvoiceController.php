@@ -108,7 +108,7 @@ class MelisCommerceOrderInvoiceController extends AbstractActionController
         $orderInvoiceService = $this->getServiceLocator()->get('MelisCommerceOrderInvoiceService');
         $orderId = $this->params()->fromPost('orderId', '');
 
-        $invoiceId = $orderInvoiceService->generateOrderInvoice($orderId, null);
+        $invoiceId = $orderInvoiceService->generateOrderInvoice($orderId, 'orderinvoicetemplate/default');
 
         return new JsonModel([
             'id' => $invoiceId
