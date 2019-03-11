@@ -8,10 +8,10 @@
         // PDF TRANSLATIONS
         'tr_meliscommerceorderinvoice_pdf_invoice' => 'FACTURE',
         'tr_meliscommerceorderinvoice_pdf_date' => 'DATE',
-        'tr_meliscommerceorderinvoice_pdf_bill_to' => 'FACTURER A',
+        'tr_meliscommerceorderinvoice_pdf_bill_to' => 'FACTURÉ À',
         'tr_meliscommerceorderinvoice_pdf_items' => 'PANIER',
         'tr_meliscommerceorderinvoice_pdf_price' => 'PRIX',
-        'tr_meliscommerceorderinvoice_pdf_qty' => 'QUANTITE',
+        'tr_meliscommerceorderinvoice_pdf_qty' => 'QUANTITÉ',
         'tr_meliscommerceorderinvoice_pdf_discount' => 'REMISE',
         'tr_meliscommerceorderinvoice_pdf_amount' => 'TOTAL',
         'tr_meliscommerceorderinvoice_pdf_subtotal' => 'SOUS TOTAL',
