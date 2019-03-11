@@ -98,7 +98,7 @@
                 <?php if ($this->data['hasItemDiscount']) { ?>
                 <td>&nbsp;</td>
                 <?php } ?>
-                <td style="text-align: right;"><?= $this->textTranslator->translate('tr_meliscommerceorderinvoice_pdf_invoice', 'default', $this->clientLangLocale) ?></td>
+                <td style="text-align: right;"><?= $this->textTranslator->translate('tr_meliscommerceorderinvoice_pdf_date', 'default', $this->clientLangLocale) ?></td>
                 <td><?= $this->date ?></td>
             </tr>
             <tr class="heading date invoice">
@@ -107,7 +107,7 @@
                 <?php if ($this->data['hasItemDiscount']) { ?>
                 <td>&nbsp;</td>
                 <?php } ?>
-                <td style="text-align: right;"><?= $this->textTranslator->translate('tr_meliscommerceorderinvoice_pdf_date', 'default', $this->clientLangLocale) ?> #</td>
+                <td style="text-align: right;"><?= $this->textTranslator->translate('tr_meliscommerceorderinvoice_pdf_invoice', 'default', $this->clientLangLocale) ?> #</td>
                 <td><?php echo $this->invoiceNumber ?></td>
             </tr>
             <tr class="spacing">
