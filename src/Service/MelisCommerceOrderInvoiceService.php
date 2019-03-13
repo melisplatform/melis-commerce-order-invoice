@@ -144,6 +144,7 @@ class MelisCommerceOrderInvoiceService extends MelisCoreGeneralService
         $melisEcomLangTable = $this->getServiceLocator()->get('MelisEcomLangTable');
         //order data
         $order = $ordersService->getOrderById($arrayParameters['orderId']);
+
         //client data & client ID
         $clientData = $order->getClient();
         $clientId = $clientData->cli_id;
@@ -165,6 +166,7 @@ class MelisCommerceOrderInvoiceService extends MelisCoreGeneralService
         $this->invoiceId = $invoiceId;
 
         $pdfContents = $this->html2pdf($order, $arrayParameters['template']);
+
 
         //update invoice with the correct pdf
         $orderInvoiceTable->save([
@@ -261,26 +263,58 @@ class MelisCommerceOrderInvoiceService extends MelisCoreGeneralService
 
         // PREPARE ORDER ITEMS DATA & SUBTOTAL
         foreach ($basket as $item) {
-            $discount = $this->getItemDiscount($orderCoupons, $item);
+            $discountDetails = $this->getItemDiscountDetails($orderCoupons, $item);
 
-            $data['items'][] = [
-                'obas_product_name' => $item->obas_product_name,
-                'obas_quantity' => $item->obas_quantity,
-                'currency' => $currency['cur_symbol'],
-                'obas_price_net' => $this->formatPrice($currency['cur_symbol'], $item->obas_price_net),
-                'discount' => $discount > 0 ? $this->formatPrice($currency['cur_symbol'], $discount) : '',
-                'amount' => $this->formatPrice(
-                    $currency['cur_symbol'],
-                    ($item->obas_price_net - $discount) * $item->obas_quantity
-                )
-            ];
-
-            if ($discount > 0) {
+            // CHECK IF THERE IS A DISCOUNT ASSOCIATED TO THE PRODUCT
+            if ($discountDetails['discount'] > 0) {
                 $hasItemDiscount = true;
             }
 
+            if ($discountDetails['discount'] > 0) {
+                // PRODUCT WITH DISCOUNT
+                $data['items'][] = [
+                    'obas_product_name' => $item->obas_product_name,
+                    'obas_quantity' => $discountDetails['qty_used'],
+                    'currency' => $currency['cur_symbol'],
+                    'obas_price_net' => $this->formatPrice($currency['cur_symbol'], $item->obas_price_net),
+                    'discount' => $discountDetails['discountTotal'] > 0 ? $this->formatPrice($currency['cur_symbol'], $discountDetails['discountTotal']) : '',
+                    'unitDiscountPrice' => $discountDetails['discount'] > 0 ? $this->formatPrice($currency['cur_symbol'], $item->obas_price_net - $discountDetails['discount']) : '',
+                    'amount' => $this->formatPrice(
+                        $currency['cur_symbol'],
+                        ($item->obas_price_net * $discountDetails['qty_used']) - $discountDetails['discountTotal']
+                    )
+                ];
+
+                // PRODUCT WITHOUT DISCOUNT
+                $data['items'][] = [
+                    'obas_product_name' => $item->obas_product_name,
+                    'obas_quantity' => $item->obas_quantity - $discountDetails['qty_used'],
+                    'currency' => $currency['cur_symbol'],
+                    'obas_price_net' => $this->formatPrice($currency['cur_symbol'], $item->obas_price_net),
+                    'discount' => '',
+                    'unitDiscountPrice' => '',
+                    'amount' => $this->formatPrice(
+                        $currency['cur_symbol'],
+                        $item->obas_price_net * ($item->obas_quantity - $discountDetails['qty_used'])
+                    )
+                ];
+            } else {
+                $data['items'][] = [
+                    'obas_product_name' => $item->obas_product_name,
+                    'obas_quantity' => $item->obas_quantity,
+                    'currency' => $currency['cur_symbol'],
+                    'obas_price_net' => $this->formatPrice($currency['cur_symbol'], $item->obas_price_net),
+                    'discount' => $discountDetails['discountTotal'] > 0 ? $this->formatPrice($currency['cur_symbol'], $discountDetails['discountTotal']) : '',
+                    'unitDiscountPrice' => $discountDetails['discount'] > 0 ? $this->formatPrice($currency['cur_symbol'], $item->obas_price_net - $discountDetails['discount']) : '',
+                    'amount' => $this->formatPrice(
+                        $currency['cur_symbol'],
+                        ($item->obas_price_net * $item->obas_quantity) - $discountDetails['discountTotal']
+                    )
+                ];
+            }
+
             $subtotal += number_format(
-                ($item->obas_price_net - $discount) * $item->obas_quantity,
+                ($item->obas_price_net * $item->obas_quantity) - $discountDetails['discountTotal'],
                 2
             );
         }
@@ -347,29 +381,37 @@ class MelisCommerceOrderInvoiceService extends MelisCoreGeneralService
      * Get the discount for each item for coupons that are linked to products
      * @param $orderCoupons
      * @param $item
-     * @return float|int
+     * @return array
      */
-    private function getItemDiscount ($orderCoupons, $item) {
-        $discount = 0;
+    private function getItemDiscountDetails ($orderCoupons, $item) {
+        $discountDetails = [
+            'discountTotal' => 0,
+            'discount' => 0,
+            'qty_used' => 0
+        ];
 
         if (!empty($orderCoupons)) {
             foreach ($orderCoupons as $coupon) {
                 if ($coupon->getCoupon()->coup_product_assign) {
-                    foreach ($coupon->getCoupon()->discountedBasket as $item2) {
-                        if ($item2->cord_basket_id == $item->obas_id) {
+                    foreach ($coupon->getCoupon()->discountedBasket as $discountedBasket) {
+                        if ($discountedBasket->cord_basket_id == $item->obas_id) {
                             if (!empty($coupon->getCoupon()->coup_percentage)) {
-                                $discount = ($coupon->getCoupon()->coup_percentage / 100) * $item->obas_price_net;
+                                $discountDetails['discountTotal'] = (($coupon->getCoupon()->coup_percentage / 100) * $item->obas_price_net)
+                                    * $discountedBasket->cord_quantity_used;
                             }
                             elseif (!empty($coupon->getCoupon()->coup_discount_value)) {
-                                $discount = $coupon->getCoupon()->coup_discount_value * $item2->cord_quantity_used;
+                                $discountDetails['discountTotal'] = $coupon->getCoupon()->coup_discount_value * $discountedBasket->cord_quantity_used;
                             }
+
+                            $discountDetails['discount'] = (($coupon->getCoupon()->coup_percentage / 100) * $item->obas_price_net);
+                            $discountDetails['qty_used'] = $discountedBasket->cord_quantity_used;
                         }
                     }
                 }
             }
         }
 
-        return $discount;
+        return $discountDetails;
     }
 
     /**

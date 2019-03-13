@@ -65,7 +65,7 @@
     $column = 'width: 20%;';
 
     if ($this->data['hasItemDiscount']) {
-        $firstColumn = 'width: 40%;';
+        $firstColumn = 'width: 25%;';
         $column = 'width: 15%;';
     }
  ?>
@@ -73,21 +73,27 @@
         <table height="15" id="invoice" border="0" style="width: 100%;" cellpadding="0" cellspacing="0">
             <thead>
             <tr class="heading">
-                <th class="logo" align="left" style="<?= $firstColumn ?>"><img src="<?php echo $this->serverUrl() . '/MelisCommerceOrderInvoice/assets/logo-melis.png' ?>"></th>
+                <?php if ($this->data['hasItemDiscount']) { ?>
+                <th class="logo" align="left" style="width: 25%;"><img src="<?php echo $this->serverUrl() . '/MelisCommerceOrderInvoice/assets/logo-melis.png' ?>"></th>
+                <?php } else { ?>
+                <th class="logo" align="left" style="width: 40%;"><img src="<?php echo $this->serverUrl() . '/MelisCommerceOrderInvoice/assets/logo-melis.png' ?>"></th>
+                <?php } ?>
                 <th style="<?= $column ?>">&nbsp;</th>
                 <th style="<?= $column ?>">&nbsp;</th>
                 <?php if ($this->data['hasItemDiscount']) { ?>
                 <th style="<?= $column ?>">&nbsp;</th>
+                <th style="<?= $column ?>">&nbsp;</th>
                 <?php } ?>
-                <th style="<?= $column ?>"><h2><?= $this->textTranslator->translate('tr_meliscommerceorderinvoice_pdf_invoice', 'default', $this->clientLangLocale) ?></h2></th>
+                <th style="<?= $column ?> margin-right: -5px;"><h3><?= $this->textTranslator->translate('tr_meliscommerceorderinvoice_pdf_invoice', 'default', $this->clientLangLocale) ?></h3></th>
             </tr>
             </thead>
             <tbody>
             <tr class="heading">
-                <td style="<?= $firstColumn ?> text-align: left;">4 rue du Dahomey<br/>75011 Paris<br/> France</td>
+                <td style="<?php echo $firstColumn ?> text-align: left;">4 rue du Dahomey<br/>75011 Paris<br/> France</td>
                 <td style="<?= $column ?>">&nbsp;</td>
                 <td style="<?= $column ?>">&nbsp;</td>
                 <?php if ($this->data['hasItemDiscount']) { ?>
+                <td style="<?= $column ?>">&nbsp;</td>
                 <td style="<?= $column ?>">&nbsp;</td>
                 <?php } ?>
                 <td style="<?= $column ?>">&nbsp;</td>
@@ -97,6 +103,7 @@
                 <td>&nbsp;</td>
                 <?php if ($this->data['hasItemDiscount']) { ?>
                 <td>&nbsp;</td>
+                <td>&nbsp;</td>
                 <?php } ?>
                 <td style="text-align: right;"><?= $this->textTranslator->translate('tr_meliscommerceorderinvoice_pdf_date', 'default', $this->clientLangLocale) ?></td>
                 <td><?= $this->date ?></td>
@@ -105,6 +112,7 @@
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <?php if ($this->data['hasItemDiscount']) { ?>
+                <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <?php } ?>
                 <td style="text-align: right;"><?= $this->textTranslator->translate('tr_meliscommerceorderinvoice_pdf_invoice', 'default', $this->clientLangLocale) ?> #</td>
@@ -116,14 +124,6 @@
                 <td>&nbsp;</td>
                 <?php if ($this->data['hasItemDiscount']) { ?>
                 <td>&nbsp;</td>
-                <?php } ?>
-                <td>&nbsp;</td>
-            </tr>
-            <tr class="spacing">
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <?php if ($this->data['hasItemDiscount']) { ?>
                 <td>&nbsp;</td>
                 <?php } ?>
                 <td>&nbsp;</td>
@@ -133,6 +133,17 @@
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <?php if ($this->data['hasItemDiscount']) { ?>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <?php } ?>
+                <td>&nbsp;</td>
+            </tr>
+            <tr class="spacing">
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <?php if ($this->data['hasItemDiscount']) { ?>
+                <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <?php } ?>
                 <td>&nbsp;</td>
@@ -141,8 +152,11 @@
                 <td style="background-color: #e61c23; color: #fff; font-weight: bold; border-top: 1px solid #333; border-bottom: 1px solid #333; border-left: 1px solid #333;"><?= $this->textTranslator->translate('tr_meliscommerceorderinvoice_pdf_bill_to', 'default', $this->clientLangLocale) ?></td>
                 <?php if ($this->data['hasItemDiscount']) { ?>
                 <td style="background-color: #e61c23; color: #fff; font-weight: bold; border-top: 1px solid #333; border-bottom: 1px solid #333;">&nbsp;</td>
-                <?php } ?>
                 <td style="background-color: #e61c23; color: #fff; font-weight: bold; border-top: 1px solid #333; border-bottom: 1px solid #333; border-right: 1px solid #333;">&nbsp;</td>
+                <td>&nbsp;</td>
+                <?php } else { ?>
+                <td style="background-color: #e61c23; color: #fff; font-weight: bold; border-top: 1px solid #333; border-bottom: 1px solid #333; border-right: 1px solid #333;">&nbsp;</td>
+                <?php } ?>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
             </tr>
@@ -157,8 +171,11 @@
                 <td style="border-left: 1px solid #333;"><?php echo $billingAddress->oadd_firstname . ' ' . $billingAddress->oadd_name ?></td>
                 <?php if ($this->data['hasItemDiscount']) { ?>
                 <td>&nbsp;</td>
-                <?php } ?>
                 <td style="border-right: 1px solid #333;">&nbsp;</td>
+                <td>&nbsp;</td>
+                <?php } else { ?>
+                <td style="border-right: 1px solid #333;">&nbsp;</td>
+                <?php } ?>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
             </tr>
@@ -166,8 +183,11 @@
                 <td style="border-left: 1px solid #333;"><?php echo $billingAddress->oadd_num . ', ' . $billingAddress->oadd_street ?></td>
                 <?php if ($this->data['hasItemDiscount']) { ?>
                 <td>&nbsp;</td>
-                <?php } ?>
                 <td style="border-right: 1px solid #333;">&nbsp;</td>
+                <td>&nbsp;</td>
+                <?php } else { ?>
+                <td style="border-right: 1px solid #333;">&nbsp;</td>
+                <?php } ?>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
             </tr>
@@ -175,8 +195,11 @@
                 <td style="border-left: 1px solid #333;"><?php echo $billingAddress->oadd_city . ', ' . $billingAddress->oadd_zipcode ?></td>
                 <?php if ($this->data['hasItemDiscount']) { ?>
                 <td>&nbsp;</td>
-                <?php } ?>
                 <td style="border-right: 1px solid #333;">&nbsp;</td>
+                <td>&nbsp;</td>
+                <?php } else { ?>
+                <td style="border-right: 1px solid #333;">&nbsp;</td>
+                <?php } ?>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
             </tr>
@@ -184,9 +207,12 @@
                 <td style="border-left: 1px solid #333; border-bottom: 1px solid #333;"><?php echo $billingAddress->oadd_country ?></td>
                 <?php if ($this->data['hasItemDiscount']) { ?>
                 <td style="border-bottom: 1px solid #333;">&nbsp;</td>
-                <?php } ?>
                 <td style="border-right: 1px solid #333; border-bottom: 1px solid #333;">&nbsp;</td>
                 <td>&nbsp;</td>
+                <?php } else { ?>
+                <td style="border-right: 1px solid #333; border-bottom: 1px solid #333;">&nbsp;</td>
+                <?php } ?>
+                <td>&nbsp;</td>
                 <td>&nbsp;</td>
             </tr>
             <tr class="spacing">
@@ -194,6 +220,7 @@
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <?php if ($this->data['hasItemDiscount']) { ?>
+                <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <?php } ?>
                 <td>&nbsp;</td>
@@ -204,6 +231,7 @@
                 <td>&nbsp;</td>
                 <?php if ($this->data['hasItemDiscount']) { ?>
                 <td>&nbsp;</td>
+                <td>&nbsp;</td>
                 <?php } ?>
                 <td>&nbsp;</td>
             </tr>
@@ -212,29 +240,36 @@
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <?php if ($this->data['hasItemDiscount']) { ?>
+                <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <?php } ?>
                 <td>&nbsp;</td>
             </tr>
             <tr class="content-items items-heading">
-                <td style="width: 40%;" class="items"><?= $this->textTranslator->translate('tr_meliscommerceorderinvoice_pdf_items', 'default', $this->clientLangLocale) ?></td>
-                <td style="width: 15%;"><?= $this->textTranslator->translate('tr_meliscommerceorderinvoice_pdf_price', 'default', $this->clientLangLocale) ?></td>
-                <td style="width: 15%;"><?= $this->textTranslator->translate('tr_meliscommerceorderinvoice_pdf_qty', 'default', $this->clientLangLocale) ?></td>
+                <td><?= $this->textTranslator->translate('tr_meliscommerceorderinvoice_pdf_items', 'default', $this->clientLangLocale) ?></td>
+                <td><?= wordwrap($this->textTranslator->translate('tr_meliscommerceorderinvoice_pdf_price', 'default', $this->clientLangLocale), 8, '<br>') ?></td>
+                <td><?= $this->textTranslator->translate('tr_meliscommerceorderinvoice_pdf_qty', 'default', $this->clientLangLocale) ?></td>
                 <?php if ($this->data['hasItemDiscount']) { ?>
-                <td style="width: 15%;"><?= $this->textTranslator->translate('tr_meliscommerceorderinvoice_pdf_discount', 'default', $this->clientLangLocale) ?></td>
+                <td><?= $this->textTranslator->translate('tr_meliscommerceorderinvoice_pdf_discount', 'default', $this->clientLangLocale) ?></td>
+                <td><?= wordwrap($this->textTranslator->translate('tr_meliscommerceorderinvoice_pdf_discount_total', 'default', $this->clientLangLocale), 9, '<br>') ?></td>
                 <?php } ?>
-                <td style="width: 15%;"><?= $this->textTranslator->translate('tr_meliscommerceorderinvoice_pdf_amount', 'default', $this->clientLangLocale) ?></td>
+                <td><?= $this->textTranslator->translate('tr_meliscommerceorderinvoice_pdf_amount', 'default', $this->clientLangLocale) ?></td>
             </tr>
 
             <?php foreach ($this->data['items'] as $item) { ?>
-                <tr class="item">
-                    <td style="border-right-width: 1px; border-right-style: solid; border-right-color: #333;text-align: left;"><?= $item['obas_product_name'] ?></td>
-                    <td style="border-left: 0;"><?= $item['obas_price_net'] ?></td>
-                    <td><?= $item['obas_quantity'] ?></td>
+                <tr>
                     <?php if ($this->data['hasItemDiscount']) { ?>
-                    <td><?= $item['discount'] ?></td>
+                    <td style="border-right-width: 1px; border-right-style: solid; border-right-color: #333;text-align: left; font-size: 13px;"><?= wordwrap($item['obas_product_name'], 25, '<br>', true) ?></td>
+                    <?php } else { ?>
+                    <td style="border-right-width: 1px; border-right-style: solid; border-right-color: #333;text-align: left; font-size: 13px;"><?= wordwrap($item['obas_product_name'], 42, '<br>', true) ?></td>
                     <?php } ?>
-                    <td style="text-align: right;"><?= $item['amount'] ?></td>
+                    <td style="border-left: 0; font-size: 13px;"><?= $item['obas_price_net'] ?></td>
+                    <td style="font-size: 13px;"><?= $item['obas_quantity'] ?></td>
+                    <?php if ($this->data['hasItemDiscount']) { ?>
+                    <td style="font-size: 13px;"><?= $item['discount'] ?></td>
+                    <td style="font-size: 13px;"><?= $item['unitDiscountPrice'] ?></td>
+                    <?php } ?>
+                    <td style="text-align: right; font-size: 13px;"><?= $item['amount'] ?></td>
                 </tr>
             <?php } ?>
 
@@ -242,6 +277,7 @@
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <?php if ($this->data['hasItemDiscount']) { ?>
+                <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <?php } ?>
                 <td style="font-size: 13px;"><?= $this->textTranslator->translate('tr_meliscommerceorderinvoice_pdf_subtotal', 'default', $this->clientLangLocale) ?></td>
@@ -254,6 +290,7 @@
                 <td>&nbsp;</td>
                 <?php if ($this->data['hasItemDiscount']) { ?>
                 <td>&nbsp;</td>
+                <td>&nbsp;</td>
                 <?php } ?>
                 <td style="font-size: 13px;"><?= $this->textTranslator->translate('tr_meliscommerceorderinvoice_pdf_discount', 'default', $this->clientLangLocale) ?></td>
                 <td style="text-align: right;font-size: 13px;">&nbsp;</td>
@@ -262,20 +299,12 @@
 
             <?php $coupons = '' ?>
             <?php if (!empty($this->data['coupons'])) { ?>
-                <tr class="total discount">
-                    <td>&nbsp;</td>
-                    <td>&nbsp;</td>
-                <?php if ($this->data['hasItemDiscount']) { ?>
-                    <td>&nbsp;</td>
-                <?php } ?>
-                    <td style="font-size: 13px;">Code</td>
-                    <td style="text-align: right;">&nbsp;</td>
-                </tr>
                 <?php foreach ($this->data['coupons'] as $coupon) { ?>
                     <tr class="total discount">
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
                         <?php if ($this->data['hasItemDiscount']) { ?>
+                        <td>&nbsp;</td>
                         <td>&nbsp;</td>
                         <?php } ?>
                         <td style="font-size: 13px;"><?= $coupon['code'] ?></td>
@@ -289,6 +318,7 @@
                 <td>&nbsp;</td>
                 <?php if ($this->data['hasItemDiscount']) { ?>
                 <td>&nbsp;</td>
+                <td>&nbsp;</td>
                 <?php } ?>
                 <td style="font-size: 13px;"><?= $this->textTranslator->translate('tr_meliscommerceorderinvoice_pdf_shipping', 'default', $this->clientLangLocale) ?></td>
                 <td style="text-align: right;font-size: 13px;"><?= $this->data['shipping'] ?></td>
@@ -297,6 +327,7 @@
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <?php if ($this->data['hasItemDiscount']) { ?>
+                <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <?php } ?>
                 <td class="total-text" style="border-top: black 1px solid;font-size: 13px;"><?= $this->textTranslator->translate('tr_meliscommerceorderinvoice_pdf_total', 'default', $this->clientLangLocale) ?></td>
