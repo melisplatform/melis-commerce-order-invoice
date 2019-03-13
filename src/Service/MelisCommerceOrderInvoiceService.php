@@ -333,7 +333,7 @@ class MelisCommerceOrderInvoiceService extends MelisCoreGeneralService
 
         // PREPARE FINAL DATA
         $data['hasItemDiscount'] = $hasItemDiscount;
-        $data['subtotal'] = $this->formatPrice($currency['cur_symbol'],$subtotal);
+        $data['subtotal'] = $this->formatPrice($currency['cur_symbol'], $subtotal);
         $data['shipping'] = $shipping > 0 ? $this->formatPrice($currency['cur_symbol'], $shipping) : '';
 
         if ($totalCouponDiscount >= $subtotal) {
@@ -342,7 +342,10 @@ class MelisCommerceOrderInvoiceService extends MelisCoreGeneralService
             $total = ($subtotal - $totalCouponDiscount) + $shipping;
         }
 
-        $data['total'] = $this->formatPrice($currency['cur_symbol'],$total);
+        $data['total'] = $this->formatPrice($currency['cur_symbol'], $total);
+
+        // PREPARE RAW FINAL DATA (WITH NO CURRENCY)
+        $data['rawData']['total'] = $total;
 
         return $data;
     }
