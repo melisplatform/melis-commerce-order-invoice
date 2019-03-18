@@ -13,10 +13,11 @@
         'tr_meliscommerceorderinvoice_pdf_price' => 'UNIT PRICE',
         'tr_meliscommerceorderinvoice_pdf_qty' => 'QTY',
         'tr_meliscommerceorderinvoice_pdf_discount' => 'DISCOUNT',
-        'tr_meliscommerceorderinvoice_pdf_discount_total' => 'D/ PRICE',
+        'tr_meliscommerceorderinvoice_pdf_discount_total' => 'D/ UNIT PRICE',
         'tr_meliscommerceorderinvoice_pdf_amount' => 'AMOUNT',
         'tr_meliscommerceorderinvoice_pdf_subtotal' => 'SUB TOTAL',
         'tr_meliscommerceorderinvoice_pdf_shipping' => 'SHIPPING',
         'tr_meliscommerceorderinvoice_pdf_total' => 'TOTAL',
-        'tr_meliscommerceorderinvoice_pdf_comments' => 'COMMENTS'
+        'tr_meliscommerceorderinvoice_pdf_comments' => 'COMMENTS',
+        'tr_meliscommerceorderinvoice_pdf_ord_ref' => 'ORDER REF'
     ];
