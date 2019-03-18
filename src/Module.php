@@ -16,6 +16,7 @@ use Zend\Session\Container;
 
 use MelisCommerceOrderInvoice\Listener\MelisCommerceOrderInvoiceGenerateInvoiceListener;
 use MelisCommerceOrderInvoice\Listener\MelisCommerceOrderDetailsInvoiceDataListener;
+use MelisCommerceOrderInvoice\Listener\MelisCommerceOrderHistoryInvoiceDataListener;
 
 class Module
 {
@@ -29,6 +30,7 @@ class Module
 
         $eventManager->attach(new MelisCommerceOrderInvoiceGenerateInvoiceListener());
         $eventManager->attach(new MelisCommerceOrderDetailsInvoiceDataListener());
+        $eventManager->attach(new MelisCommerceOrderHistoryInvoiceDataListener());
     }
 
     public function getConfig()
