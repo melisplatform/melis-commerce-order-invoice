@@ -11,7 +11,7 @@
         'tr_meliscommerceorderinvoice_pdf_bill_to' => 'FACTURÉ À',
         'tr_meliscommerceorderinvoice_pdf_items' => 'PRODUITS',
         'tr_meliscommerceorderinvoice_pdf_price' => 'PRIX UNITAIRE',
-        'tr_meliscommerceorderinvoice_pdf_qty' => 'QUANTITÉ',
+        'tr_meliscommerceorderinvoice_pdf_qty' => 'QTE',
         'tr_meliscommerceorderinvoice_pdf_discount' => 'REMISE',
         'tr_meliscommerceorderinvoice_pdf_discount_total' => 'PU APRÈS REMISE',
         'tr_meliscommerceorderinvoice_pdf_amount' => 'TOTAL',
