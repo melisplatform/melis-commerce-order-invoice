@@ -2,7 +2,7 @@
     return [
         // TABLE
         'tr_meliscommerceorderinvoice_table_header_id' => 'ID',
-        'tr_meliscommerceorderinvoice_table_header_date' => 'date',
+        'tr_meliscommerceorderinvoice_table_header_date' => 'Date',
 
         'tr_meliscommerce_order_invoice_export_prompt_title' => 'Invoice',
         'tr_meliscommerce_order_invoice_export_no_invoice' => 'Invoice unavailable for this order',
