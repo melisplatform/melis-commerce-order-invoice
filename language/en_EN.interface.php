@@ -1,10 +1,13 @@
 <?php
     return [
+        // TABLE
+        'tr_meliscommerceorderinvoice_table_header_id' => 'ID',
+        'tr_meliscommerceorderinvoice_table_header_date' => 'date',
+
         'tr_meliscommerce_order_invoice_export_prompt_title' => 'Invoice',
         'tr_meliscommerce_order_invoice_export_no_invoice' => 'Invoice unavailable for this order',
-        'tr_meliscommerce_order_invoice_export_pdf_title' => 'Export PDF',
+        'tr_meliscommerce_order_invoice_export_pdf_title' => 'Export Invoice',
         'tr_meliscommerce_order_invoice_button_regenerate_invoice' => 'Regenerate Invoice',
-        'tr_meliscommerce_order_invoice_button_download_invoice' => 'Download Invoice',
         // PDF TRANSLATIONS
         'tr_meliscommerceorderinvoice_pdf_invoice' => 'INVOICE',
         'tr_meliscommerceorderinvoice_pdf_date' => 'DATE',

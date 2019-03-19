@@ -122,7 +122,7 @@ class MelisCommerceOrderInvoiceController extends AbstractActionController
     public function renderOrdersContentTabsContentOrderInvoiceListAction()
     {
         $columns = $this->getTool('meliscommerce', 'meliscommerce_order_invoice_list')->getColumns();
-        $columns['actions'] = ['text' => 'Actions', 'width' => '0%'];
+        $columns['actions'] = ['text' => 'action', 'width' => '0%'];
 
         $view = new ViewModel();
 

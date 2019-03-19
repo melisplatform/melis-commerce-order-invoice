@@ -41,10 +41,10 @@
                             ],
                             'columns' => [
                                 'ordin_id' => [
-                                    'text' => 'ID',
+                                    'text' => 'tr_meliscommerceorderinvoice_table_header_id',
                                 ],
                                 'ordin_date_generated' => [
-                                    'text' => 'DATE',
+                                    'text' => 'tr_meliscommerceorderinvoice_table_header_date',
                                 ],
                             ],
                             'searchables' => [
