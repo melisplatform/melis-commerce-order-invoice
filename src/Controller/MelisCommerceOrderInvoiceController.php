@@ -17,14 +17,8 @@ class MelisCommerceOrderInvoiceController extends AbstractActionController
     public function getOrderInvoiceAction()
     {
         $invoiceId = $this->params()->fromPost('invoiceId', null);
-
-        /**
-         * PREPARE VARIABLES NEEDED TO FORM THE FILE NAME
-         * [date]-[orderId]-[invoiceId][custom].pdf
-         */
         $config = $this->getServiceLocator()->get('config');
         $custom = $config['plugins']['meliscommerceorderinvoice']['data']['custom-pdf-file-name'];
-        $date = date('Ymd');
 
         try {
             // FOR BACKOFFICE
@@ -33,7 +27,11 @@ class MelisCommerceOrderInvoiceController extends AbstractActionController
             if ($melisCoreAuthSrv->hasIdentity()) {
                 $orderInvoiceService = $this->getServiceLocator()->get('MelisCommerceOrderInvoiceService');
                 $invoice = $orderInvoiceService->getInvoice($invoiceId);
-
+                /**
+                 * PREPARE VARIABLES NEEDED TO FORM THE FILE NAME
+                 * [date]-[orderId]-[invoiceId][custom].pdf
+                 */
+                $date = strftime('%Y%m%d', strtotime($invoice['ordin_date_generated']));
                 $filename = $date . '-' . $invoice['ordin_order_id'] . '-' . $invoiceId;
 
                 if ($custom !== '') {
@@ -65,6 +63,11 @@ class MelisCommerceOrderInvoiceController extends AbstractActionController
                         //$personId = $melisComAuthSrv->getPersonId();
 
                         if ($invoice['ordin_user_id'] == $clientId) {
+                            /**
+                             * PREPARE VARIABLES NEEDED TO FORM THE FILE NAME
+                             * [date]-[orderId]-[invoiceId][custom].pdf
+                             */
+                            $date = strftime('%Y%m%d', strtotime($invoice['ordin_date_generated']));
                             $filename = $date . '-' . $invoice['ordin_order_id'] . '-' . $invoiceId;
 
                             if ($custom !== '') {
