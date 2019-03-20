@@ -4,6 +4,7 @@
         'tr_meliscommerceorderinvoice_table_header_id' => 'ID',
         'tr_meliscommerceorderinvoice_table_header_date' => 'Date',
 
+        'tr_meliscommerce_order_invoice_invoices' => 'Factures',
         'tr_meliscommerce_order_invoice_export_prompt_title' => 'Facture',
         'tr_meliscommerce_order_invoice_export_no_invoice' => 'Facture indisponible pour cette commande',
         'tr_meliscommerce_order_invoice_export_pdf_title' => 'Exporter la facture',
