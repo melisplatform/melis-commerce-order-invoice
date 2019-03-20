@@ -27,18 +27,21 @@ class MelisCommerceOrderDetailsInvoiceDataListener extends MelisCoreGeneralListe
             function($e){
                 $sm = $e->getTarget()->getServiceLocator();
                 $params = $e->getParams();
-                $orderId = $params['order']['id'];
 
-                $orderInvoiceService = $sm->get('MelisCommerceOrderInvoiceService');
+                if (!empty($params['order'])) {
+                    $orderId = $params['order']['id'];
 
-                $invoice = $orderInvoiceService->getOrderInvoiceList($orderId, null, $limit = 1, 'DESC');
+                    $orderInvoiceService = $sm->get('MelisCommerceOrderInvoiceService');
 
-                if (!empty($invoice)) {
-                    $invoice = $invoice[0];
-                    $invoice['url_to_download_pdf'] = '/CommerceOrderInvoice/getInvoice';
+                    $invoice = $orderInvoiceService->getOrderInvoiceList($orderId, null, $limit = 1, 'DESC');
+
+                    if (!empty($invoice)) {
+                        $invoice = $invoice[0];
+                        $invoice['url_to_download_pdf'] = '/CommerceOrderInvoice/getInvoice';
+                    }
+
+                    $params['orderInvoice'] = $invoice;
                 }
-
-                $params['orderInvoice'] = $invoice;
             });
 
         $this->listeners[] = $callBackHandler;
