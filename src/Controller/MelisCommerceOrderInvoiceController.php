@@ -18,6 +18,14 @@ class MelisCommerceOrderInvoiceController extends AbstractActionController
     {
         $invoiceId = $this->params()->fromPost('invoiceId', null);
 
+        /**
+         * PREPARE VARIABLES NEEDED TO FORM THE FILE NAME
+         * [date]-[orderId]-[invoiceId][custom].pdf
+         */
+        $config = $this->getServiceLocator()->get('config');
+        $custom = $config['plugins']['meliscommerceorderinvoice']['data']['custom-pdf-file-name'];
+        $date = date('Ymd');
+
         try {
             // FOR BACKOFFICE
             $melisCoreAuthSrv = $this->getServiceLocator()->get('MelisCoreAuth');
@@ -26,7 +34,15 @@ class MelisCommerceOrderInvoiceController extends AbstractActionController
                 $orderInvoiceService = $this->getServiceLocator()->get('MelisCommerceOrderInvoiceService');
                 $invoice = $orderInvoiceService->getInvoice($invoiceId);
 
-                $response = $this->prepareResponse($invoice['ordin_invoice_pdf']);
+                $filename = $date . '-' . $invoice['ordin_order_id'] . '-' . $invoiceId;
+
+                if ($custom !== '') {
+                    $filename .= '-' . $custom . '.pdf';
+                } else {
+                    $filename .= '.pdf';
+                }
+
+                $response = $this->prepareResponse($invoice['ordin_invoice_pdf'], $filename);
 
                 $view = new ViewModel();
                 $view->setTerminal(true);
@@ -49,7 +65,15 @@ class MelisCommerceOrderInvoiceController extends AbstractActionController
                         //$personId = $melisComAuthSrv->getPersonId();
 
                         if ($invoice['ordin_user_id'] == $clientId) {
-                            $response = $this->prepareResponse($invoice['ordin_invoice_pdf']);
+                            $filename = $date . '-' . $invoice['ordin_order_id'] . '-' . $invoiceId;
+
+                            if ($custom !== '') {
+                                $filename .= '-' . $custom . '.pdf';
+                            } else {
+                                $filename .= '.pdf';
+                            }
+
+                            $response = $this->prepareResponse($invoice['ordin_invoice_pdf'], $filename);
 
                             $view = new ViewModel();
                             $view->setTerminal(true);
@@ -186,7 +210,7 @@ class MelisCommerceOrderInvoiceController extends AbstractActionController
      * @param string $fileName
      * @return \Zend\Stdlib\ResponseInterface
      */
-    private function prepareResponse($pdfContents, $fileName = 'invoice.pdf')
+    private function prepareResponse($pdfContents, $fileName)
     {
         $response = $this->getResponse();
         $headers  = $response->getHeaders();

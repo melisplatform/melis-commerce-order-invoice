@@ -42,9 +42,8 @@ $(function() {
         downloadFile(
             'POST',
             url,
-            params, 
-            null, 
-            'invoice.pdf',
+            params,
+            null,
             function() {
                 melisCoreTool.done('.export-invoice-pdf');
             }
@@ -72,11 +71,10 @@ $(function() {
                 params = 'invoiceId=' + data.latestInvoiceId;
 
                 downloadFile(
-                    'POST', 
-                    url, 
-                    params, 
-                    null, 
-                    'invoice.pdf', 
+                    'POST',
+                    url,
+                    params,
+                    null,
                     function() {
                         melisCoreTool.done('.export-order-pdf');
                     }
@@ -112,7 +110,7 @@ $(function() {
     /**
      * Download the file using XMLHttpRequest
      */
-    function downloadFile(requestType, url, params, type = 'application/pdf', fileName, onLoadCallback = null, callback = null) {
+    function downloadFile(requestType, url, params, type = 'application/pdf', onLoadCallback = null, callback = null) {
         let xhr = new XMLHttpRequest();
 
         xhr.open(requestType, url);
@@ -132,7 +130,7 @@ $(function() {
                 let downloadUrl = window.URL.createObjectURL(blob);
 
                 link.href = downloadUrl;
-                link.download = fileName;
+                link.download = xhr.getResponseHeader('fileName');
                 link.dispatchEvent(new MouseEvent(`click`, {bubbles: true, cancelable: true, view: window}));
 
                 if (onLoadCallback != undefined || onLoadCallback != null) {

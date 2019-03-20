@@ -2,6 +2,9 @@
     return [
         'plugins' => [
             'meliscommerceorderinvoice' => [
+                'data' => [
+                    'custom-pdf-file-name' => 'invoice'
+                ],
                 'ressources' => [
                     'js' => [
                         '/MelisCommerceOrderInvoice/js/meliscommerceorderinvoice.js'
@@ -36,7 +39,7 @@
                                                         'conf' => [
                                                             'id' => 'id_meliscommerce_orders_content_tab_order_invoice',
                                                             'melisKey' => 'meliscommerce_orders_content_tab_order_invoice',
-                                                            'name' => 'tr_meliscommerce_order_invoice_export_prompt_title',
+                                                            'name' => 'tr_meliscommerce_order_invoice_invoices',
                                                             'href' => 'id_meliscommerce_orders_content_tabs_content_order_invoice',
                                                             'icon' => 'glyphicons file',
                                                             'active' => '',
