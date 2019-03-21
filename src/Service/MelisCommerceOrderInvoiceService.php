@@ -247,6 +247,43 @@ class MelisCommerceOrderInvoiceService extends MelisCoreGeneralService
     }
 
     /**
+     * generates a file name for an invoice
+     * @param $dateGenerated
+     * @param $orderId
+     * @param $invoiceId
+     * @return mixed
+     */
+    public function generateFileName($dateGenerated, $orderId, $invoiceId)
+    {
+        $arrayParameters = $this->makeArrayFromParameters(__METHOD__, func_get_args());
+        $arrayParameters = $this->sendEvent(
+            'meliscommerce_order_invoice_generate_file_name_start',
+            $arrayParameters
+        );
+
+        $config = $this->getServiceLocator()->get('config');
+        $custom = $config['plugins']['meliscommerceorderinvoice']['data']['custom-pdf-file-name'];
+        $date = strftime('%Y%m%d', strtotime($dateGenerated));
+
+        $filename = $date . '-' . $orderId . '-' . $invoiceId;
+
+        if ($custom !== '') {
+            $filename .= '-' . $custom . '.pdf';
+        } else {
+            $filename .= '.pdf';
+        }
+
+        $arrayParameters['filename'] = $filename;
+
+        $arrayParameters = $this->sendEvent(
+            'meliscommerce_order_invoice_generate_file_name_end',
+            $arrayParameters
+        );
+
+        return $arrayParameters['filename'];
+    }
+
+    /**
      * This will prepare the list of items along with the needed data for the invoice pdf
      * @param $order
      */

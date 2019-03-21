@@ -17,8 +17,6 @@ class MelisCommerceOrderInvoiceController extends AbstractActionController
     public function getOrderInvoiceAction()
     {
         $invoiceId = $this->params()->fromPost('invoiceId', null);
-        $config = $this->getServiceLocator()->get('config');
-        $custom = $config['plugins']['meliscommerceorderinvoice']['data']['custom-pdf-file-name'];
 
         try {
             // FOR BACKOFFICE
@@ -31,14 +29,11 @@ class MelisCommerceOrderInvoiceController extends AbstractActionController
                  * PREPARE VARIABLES NEEDED TO FORM THE FILE NAME
                  * [date]-[orderId]-[invoiceId][custom].pdf
                  */
-                $date = strftime('%Y%m%d', strtotime($invoice['ordin_date_generated']));
-                $filename = $date . '-' . $invoice['ordin_order_id'] . '-' . $invoiceId;
-
-                if ($custom !== '') {
-                    $filename .= '-' . $custom . '.pdf';
-                } else {
-                    $filename .= '.pdf';
-                }
+                $filename = $orderInvoiceService->generateFileName(
+                    $invoice['ordin_date_generated'],
+                    $invoice['ordin_order_id'],
+                    $invoiceId
+                );
 
                 $response = $this->prepareResponse($invoice['ordin_invoice_pdf'], $filename);
 
@@ -67,14 +62,11 @@ class MelisCommerceOrderInvoiceController extends AbstractActionController
                              * PREPARE VARIABLES NEEDED TO FORM THE FILE NAME
                              * [date]-[orderId]-[invoiceId][custom].pdf
                              */
-                            $date = strftime('%Y%m%d', strtotime($invoice['ordin_date_generated']));
-                            $filename = $date . '-' . $invoice['ordin_order_id'] . '-' . $invoiceId;
-
-                            if ($custom !== '') {
-                                $filename .= '-' . $custom . '.pdf';
-                            } else {
-                                $filename .= '.pdf';
-                            }
+                            $filename = $orderInvoiceService->generateFileName(
+                                $invoice['ordin_date_generated'],
+                                $invoice['ordin_order_id'],
+                                $invoiceId
+                            );
 
                             $response = $this->prepareResponse($invoice['ordin_invoice_pdf'], $filename);
 
