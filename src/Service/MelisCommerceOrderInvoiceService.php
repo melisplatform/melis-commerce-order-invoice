@@ -263,9 +263,9 @@ class MelisCommerceOrderInvoiceService extends MelisCoreGeneralService
 
         $config = $this->getServiceLocator()->get('config');
         $custom = $config['plugins']['meliscommerceorderinvoice']['data']['custom-pdf-file-name'];
-        $date = strftime('%Y%m%d', strtotime($dateGenerated));
+        $date = strftime('%Y%m%d', strtotime($arrayParameters['dateGenerated']));
 
-        $filename = $date . '-' . $orderId . '-' . $invoiceId;
+        $filename = $date . '-' . $arrayParameters['orderId'] . '-' . $arrayParameters['invoiceId'];
 
         if ($custom !== '') {
             $filename .= '-' . $custom . '.pdf';
