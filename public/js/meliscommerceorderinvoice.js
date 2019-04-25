@@ -1,11 +1,11 @@
 $(function() {
-    let $body = $('body');
+    var $body = $('body');
 
     /**
      * Regenerate Order
      */
     $body.on('click', '.regenerate-invoice', function(){
-        let orderId = $(this).val();
+        var orderId = $(this).val();
 
         melisCoreTool.pending(".regenerate-invoice");
 
@@ -33,9 +33,9 @@ $(function() {
      * Export Invoice in Invoice List Table
      */
     $body.on("click", '.export-invoice-pdf', function () {
-        let invoiceId = $(this).closest('tr').data('invoiceid');
-        let url = '/melis/MelisCommerceOrderInvoice/MelisCommerceOrderInvoice/getOrderInvoice';
-        let params = 'invoiceId=' + invoiceId;
+        var invoiceId = $(this).closest('tr').data('invoiceid');
+        var url = '/melis/MelisCommerceOrderInvoice/MelisCommerceOrderInvoice/getOrderInvoice';
+        var params = 'invoiceId=' + invoiceId;
 
         melisCoreTool.pending('.export-invoice-pdf');
 
@@ -43,10 +43,11 @@ $(function() {
             'POST',
             url,
             params, 
-            null,
+            'application/pdf',
             function() {
                 melisCoreTool.done('.export-invoice-pdf');
-            }
+            },
+            null
         );
     });
 
@@ -54,9 +55,9 @@ $(function() {
      * Export Order Invoice In Order List Table
      */
     $body.on("click", '.export-order-pdf', function () {
-        let orderId = $(this).closest('tr').attr('id');
-        let url = '/melis/MelisCommerceOrderInvoice/MelisCommerceOrderInvoice/getOrderInvoice';
-        let params = null;
+        var orderId = $(this).closest('tr').attr('id');
+        var url = '/melis/MelisCommerceOrderInvoice/MelisCommerceOrderInvoice/getOrderInvoice';
+        var params = null;
 
         melisCoreTool.pending(".export-order-pdf");
         // check first if there is an invoice for the order
@@ -73,11 +74,12 @@ $(function() {
                 downloadFile(
                     'POST', 
                     url, 
-                    params, 
-                    null,
+                    params,
+                    'application/pdf',
                     function() {
                         melisCoreTool.done('.export-order-pdf');
-                    }
+                    },
+                    null
                 );
             } else {
                 melisHelper.melisKoNotification(
@@ -95,8 +97,8 @@ $(function() {
      * Refresh Invoice Table
      */
     $body.on('click', '.orderInvoiceTableRefresh', function(){
-        let id = $(this).closest('.container-level-a').attr('id');
-        let orderId = isNaN(parseInt(id, 10)) ? '' : parseInt(id, 10);
+        var id = $(this).closest('.container-level-a').attr('id');
+        var orderId = isNaN(parseInt(id, 10)) ? '' : parseInt(id, 10);
 
         melisHelper.zoneReload(
             orderId + '_id_meliscommerce_orders_content_tabs_content_order_invoice_details',
@@ -110,13 +112,13 @@ $(function() {
     /**
      * Download the file using XMLHttpRequest
      */
-    function downloadFile(requestType, url, params, type = 'application/pdf', onLoadCallback = null, callback = null) {
-        let xhr = new XMLHttpRequest();
+    function downloadFile(requestType, url, params, type, onLoadCallback, callback) {
+        var xhr = new XMLHttpRequest();
 
         xhr.open(requestType, url);
         xhr.responseType = 'arraybuffer';
 
-        if (params !== null) {
+        if (params != null) {
             xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
             xhr.send(params);
         } else {
@@ -124,14 +126,14 @@ $(function() {
         }
 
         xhr.onload = function(e) {
-            if (this.status === 200) {
-                let blob = new Blob([this.response], {type:type});
-                let link = document.createElement('a');
-                let downloadUrl = window.URL.createObjectURL(blob);
+            if (this.status == 200) {
+                var blob = new Blob([this.response], {type:type});
+                var link = document.createElement('a');
+                var downloadUrl = window.URL.createObjectURL(blob);
 
                 link.href = downloadUrl;
                 link.download = xhr.getResponseHeader('fileName');
-                link.dispatchEvent(new MouseEvent(`click`, {bubbles: true, cancelable: true, view: window}));
+                link.dispatchEvent(new MouseEvent('click', {bubbles: true, cancelable: true, view: window}));
 
                 if (onLoadCallback != undefined || onLoadCallback != null) {
                     onLoadCallback();
@@ -148,7 +150,7 @@ $(function() {
      * Order Table Data
      */
     window.initOrderInvoiceTable = function(data, tblSettings) {
-        let orderId = $("#" + tblSettings.sTableId ).data("orderid");
+        var orderId = $("#" + tblSettings.sTableId ).data("orderid");
 
         data.orderId = orderId;
     };
