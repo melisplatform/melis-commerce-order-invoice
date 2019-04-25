@@ -8,7 +8,7 @@ These instructions will get you a copy of the project up and running on your mac
 
 ### Prerequisites
 
-The following modules need to be installed to have Melis CMS Google Analytics module run:
+The following modules need to be installed to have Melis Commerce Order Invoice module run:
 * Melis core
 * Melis commerce
  
