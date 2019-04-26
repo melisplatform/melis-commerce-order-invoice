@@ -14,6 +14,23 @@ The following modules need to be installed to have Melis Commerce Order Invoice 
  
 ### Installing
 
+This project can be installed using Composer. Add the following to your
+composer.json:
+
+```javascript
+    {
+        "require": {
+            "melisplatform/melis-commerce-order-invoice": "^3.0"
+        },
+        "repositories": [
+            {
+                "type": "git",
+                "url": "https://github.com/melisplatform/melis-commerce-order-invoice"
+            }
+        ]
+    }
+```
+
 Run the composer command:
 ```
 composer require melisplatform/melis-commerce-order-invoice
