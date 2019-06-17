@@ -23,8 +23,8 @@
     "ext-openssl": "*",
     "ext-json": "*",
     "ext-pdo_mysql": "*",
-    "melisplatform/melis-core": "2.3 - 3",
-    "melisplatform/melis-commerce": "^3.0",
+    "melisplatform/melis-core": "*",
+    "melisplatform/melis-commerce": "*",
     "spipu/html2pdf": "^5.2",
     "justinrainbow/json-schema": "5.2.1"
   },
