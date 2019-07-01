@@ -26,7 +26,10 @@ class Module
         $moduleRouteListener = new ModuleRouteListener();
         $moduleRouteListener->attach($eventManager);
 
-        $this->createTranslations($e);
+        $sm = $e->getApplication()->getServiceManager();
+        $routeMatch = $sm->get('router')->match($sm->get('request'));
+
+        $this->createTranslations($e,$routeMatch);
 
         $eventManager->attach(new MelisCommerceOrderInvoiceGenerateInvoiceListener());
         $eventManager->attach(new MelisCommerceOrderDetailsInvoiceDataListener());
@@ -60,14 +63,47 @@ class Module
         ];
     }
 
-    public function createTranslations($e)
+    public function createTranslations($e, $routeMatch)
     {
         $sm = $e->getApplication()->getServiceManager();
         $translator = $sm->get('translator');
+        $param = $routeMatch->getParams();
+        // Checking if the Request is from Melis-BackOffice or Front
+        $renderMode = (isset($param['renderMode'])) ? $param['renderMode'] : 'melis';
+        if ($renderMode == 'melis') {
+            $container = new Container('meliscore');
+            $locale = $container['melis-lang-locale'];
+        } else {
+            $container = new Container('melisplugins');
+            $locale = $container['melis-plugins-lang-locale'];
+        }
 
-        $container = new Container('meliscore');
-        $locale = $container['melis-lang-locale'] ? $container['melis-lang-locale'] : 'fr_FR';
 
-        $translator->addTranslationFile('phparray', __DIR__ . '/../language/' . $locale . '.interface.php');
+        if (!empty($locale)) {
+
+
+            $translationType = array(
+                'interface',
+            );
+            $translationList = array();
+            if(file_exists($_SERVER['DOCUMENT_ROOT'].'/../module/MelisModuleConfig/config/translation.list.php')){
+                $translationList = include 'module/MelisModuleConfig/config/translation.list.php';
+            }
+            foreach($translationType as $type){
+                $transPath = '';
+                $moduleTrans = __NAMESPACE__."/$locale.$type.php";
+                if(in_array($moduleTrans, $translationList)){
+                    $transPath = "module/MelisModuleConfig/languages/".$moduleTrans;
+                }
+                if(empty($transPath)){
+                    // if translation is not found, use melis default translations
+                    $defaultLocale = (file_exists(__DIR__ . "/../language/$locale.$type.php"))? $locale : "en_EN";
+                    $transPath = __DIR__ . "/../language/$defaultLocale.$type.php";
+                }
+                $translator->addTranslationFile('phparray', $transPath);
+            }
+        }
+        $lang = explode('_', $locale);
+        $lang = $lang[0];
     }
 }
