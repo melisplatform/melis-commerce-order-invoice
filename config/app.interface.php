@@ -2,6 +2,9 @@
     return [
         'plugins' => [
             'meliscommerceorderinvoice' => [
+                'conf' => [
+                    'rightsDisplay' => 'none'
+                ],
                 'data' => [
                     'custom-pdf-file-name' => 'invoice'
                 ],
