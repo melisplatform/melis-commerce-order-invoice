@@ -1,0 +1,27 @@
+<melis-commerce-order-invoice>
+	<package_info>
+		<mp_title>Melis Commerce Order Invoice</mp_title>
+		<mp_subtitle>This module brings the generation of invoices to the Melis Commerce Module</mp_subtitle>
+		<mp_description>
+			<![CDATA[
+				<p>
+					MelisCommerceOrderInvoice allows the generation and export of an invoice for each order.<br />The invoice can be downloaded directly from the list of orders.
+				</p>
+			]]>
+		</mp_description>
+		<mp_maintainers>melisplatform</mp_maintainers>
+		<mp_group>Melis Commerce</mp_group>
+	</package_info>
+	<package_images>
+		<img_1>
+			<mpi_image_title>MeliSCommerceOrderInvoice' Invoice</mpi_image_title>
+			<mpi_image_file>Melis-Commerce-Order-Invoice_1.JPG</mpi_image_file>
+			<mpi_image_main>1</mpi_image_main>
+		</img_1>
+		<img_2>
+			<mpi_image_title>MeliSCommerceOrderInvoice' List of orders</mpi_image_title>
+			<mpi_image_file>Melis-Commerce-Order-Invoice_2.JPG</mpi_image_file>
+			<mpi_image_main>0</mpi_image_main>
+		</img_2>
+	</package_images>
+</melis-commerce-order-invoice>

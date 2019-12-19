@@ -29,7 +29,8 @@ class Module
         $sm = $e->getApplication()->getServiceManager();
         $routeMatch = $sm->get('router')->match($sm->get('request'));
 
-        $this->createTranslations($e,$routeMatch);
+        if (! empty($routeMatch))
+            $this->createTranslations($e,$routeMatch);
 
         $eventManager->attach(new MelisCommerceOrderInvoiceGenerateInvoiceListener());
         $eventManager->attach(new MelisCommerceOrderDetailsInvoiceDataListener());
