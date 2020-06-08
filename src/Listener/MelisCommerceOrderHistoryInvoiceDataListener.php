@@ -9,32 +9,30 @@
 
 namespace MelisCommerceOrderInvoice\Listener;
 
-use Zend\EventManager\EventManagerInterface;
-use Zend\EventManager\ListenerAggregateInterface;
-use MelisCore\Listener\MelisCoreGeneralListener;
+use Laminas\EventManager\EventManagerInterface;
+use Laminas\EventManager\ListenerAggregateInterface;
+use MelisCore\Listener\MelisGeneralListener;
 
-class MelisCommerceOrderHistoryInvoiceDataListener extends MelisCoreGeneralListener implements ListenerAggregateInterface
+class MelisCommerceOrderHistoryInvoiceDataListener extends MelisGeneralListener implements ListenerAggregateInterface
 {
-    public function attach(EventManagerInterface$events)
+    public function attach(EventManagerInterface $events, $priority = 1)
     {
-    $sharedEvents = $events->getSharedManager();
+        $this->attachEventListener(
+            $events,
+            '*',
+            [
+                'MelisCommerceOrderHistoryPlugin_melistemplating_plugin_generate_view'
+            ],
+            function ($e) {
+                $sm = $e->getTarget()->getServiceManager();
+                $params = $e->getParams();
+                $orderInvoiceService = $sm->get('MelisCommerceOrderInvoiceService');
 
-    $callBackHandler = $sharedEvents->attach(
-        '*',
-        [
-            'MelisCommerceOrderHistoryPlugin_melistemplating_plugin_generate_view'
-        ],
-        function ($e) {
-            $sm = $e->getTarget()->getServiceLocator();
-            $params = $e->getParams();
-            $orderInvoiceService = $sm->get('MelisCommerceOrderInvoiceService');
-
-            // we use the reference to override the data on the paginator
-            foreach ($params['orders'] as &$orders) {
-                $orders['invoiceId'] = $orderInvoiceService->getOrderLatestInvoiceId($orders['id']);
+                // we use the reference to override the data on the paginator
+                foreach ($params['orders'] as &$orders) {
+                    $orders['invoiceId'] = $orderInvoiceService->getOrderLatestInvoiceId($orders['id']);
+                }
             }
-        });
-
-    $this->listeners[]=$callBackHandler;
+        );
     }
 }

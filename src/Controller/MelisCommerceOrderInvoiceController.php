@@ -2,11 +2,11 @@
 
 namespace MelisCommerceOrderInvoice\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
-use Zend\Authentication\AuthenticationService;
-use Zend\View\Model\ViewModel;
-use Zend\View\Model\JsonModel;
-use Zend\Session\Container;
+use MelisCore\Controller\AbstractActionController;
+use Laminas\Authentication\AuthenticationService;
+use Laminas\View\Model\ViewModel;
+use Laminas\View\Model\JsonModel;
+use Laminas\Session\Container;
 
 class MelisCommerceOrderInvoiceController extends AbstractActionController
 {
@@ -20,10 +20,10 @@ class MelisCommerceOrderInvoiceController extends AbstractActionController
 
         try {
             // FOR BACKOFFICE
-            $melisCoreAuthSrv = $this->getServiceLocator()->get('MelisCoreAuth');
+            $melisCoreAuthSrv = $this->getServiceManager()->get('MelisCoreAuth');
 
             if ($melisCoreAuthSrv->hasIdentity()) {
-                $orderInvoiceService = $this->getServiceLocator()->get('MelisCommerceOrderInvoiceService');
+                $orderInvoiceService = $this->getServiceManager()->get('MelisCommerceOrderInvoiceService');
                 $invoice = $orderInvoiceService->getInvoice($invoiceId);
                 /**
                  * PREPARE VARIABLES NEEDED TO FORM THE FILE NAME
@@ -46,11 +46,11 @@ class MelisCommerceOrderInvoiceController extends AbstractActionController
             }
         } catch (\Exception $e) {
             // FOR FRONT
-            $melisComAuthSrv = $this->getServiceLocator()->get('MelisComAuthenticationService');
+            $melisComAuthSrv = $this->getServiceManager()->get('MelisComAuthenticationService');
 
             if ($melisComAuthSrv->hasIdentity()) {
                 if (!is_null($invoiceId) && $invoiceId != 0) {
-                    $orderInvoiceService = $this->getServiceLocator()->get('MelisCommerceOrderInvoiceService');
+                    $orderInvoiceService = $this->getServiceManager()->get('MelisCommerceOrderInvoiceService');
                     $invoice = $orderInvoiceService->getInvoice($invoiceId);
 
                     if (!empty($invoice)) {
@@ -108,7 +108,7 @@ class MelisCommerceOrderInvoiceController extends AbstractActionController
         $latestInvoiceId = 0;
 
         if (!is_null($orderId) && $orderId != 0) {
-            $orderInvoiceService = $this->getServiceLocator()->get('MelisCommerceOrderInvoiceService');
+            $orderInvoiceService = $this->getServiceManager()->get('MelisCommerceOrderInvoiceService');
 
             $latestInvoiceId = $orderInvoiceService->getOrderLatestInvoiceId($orderId);
         }
@@ -124,7 +124,7 @@ class MelisCommerceOrderInvoiceController extends AbstractActionController
      */
     public function generateOrderInvoiceAction()
     {
-        $orderInvoiceService = $this->getServiceLocator()->get('MelisCommerceOrderInvoiceService');
+        $orderInvoiceService = $this->getServiceManager()->get('MelisCommerceOrderInvoiceService');
         $orderId = $this->params()->fromPost('orderId', '');
 
         $invoiceId = $orderInvoiceService->generateOrderInvoice($orderId, 'orderinvoicetemplate/default');
@@ -170,7 +170,7 @@ class MelisCommerceOrderInvoiceController extends AbstractActionController
         $draw = 0;
         $tableData = [];
 
-        $orderInvoiceService = $this->getServiceLocator()->get('MelisCommerceOrderInvoiceService');
+        $orderInvoiceService = $this->getServiceManager()->get('MelisCommerceOrderInvoiceService');
 
         if ($this->getRequest()->isPost()) {
             $draw = (int) $this->getRequest()->getPost('draw');
@@ -203,7 +203,7 @@ class MelisCommerceOrderInvoiceController extends AbstractActionController
     /**
      * @param $pdfContents
      * @param string $fileName
-     * @return \Zend\Stdlib\ResponseInterface
+     * @return \Laminas\Stdlib\ResponseInterface
      */
     private function prepareResponse($pdfContents, $fileName)
     {
@@ -229,7 +229,7 @@ class MelisCommerceOrderInvoiceController extends AbstractActionController
      */
     private function getTool($module, $melistoolkey)
     {
-        $melisTool = $this->getServiceLocator()->get('MelisCoreTool');
+        $melisTool = $this->getServiceManager()->get('MelisCoreTool');
         $melisTool->setMelisToolKey($module, $melistoolkey);
 
         return $melisTool;

@@ -7,43 +7,43 @@
  *
  */
 
-return array(
-    'router' => array(
-        'routes' => array(
-            'melis-backoffice' => array(
+return [
+    'router' => [
+        'routes' => [
+            'melis-backoffice' => [
                 'type'    => 'Segment',
-                'options' => array(
+                'options' => [
                     'route'    => '/melis[/]',
-                ),
-                'child_routes' => array(
-                    'application-MelisCommerceOrderInvoice' => array(
+                ],
+                'child_routes' => [
+                    'application-MelisCommerceOrderInvoice' => [
                         'type'    => 'Literal',
-                        'options' => array(
+                        'options' => [
                             'route'    => 'MelisCommerceOrderInvoice',
-                            'defaults' => array(
+                            'defaults' => [
                                 '__NAMESPACE__' => 'MelisCommerceOrderInvoice\Controller',
                                 'controller'    => 'MelisCommerceOrderInvoice',
                                 'action'        => '',
-                            ),
-                        ),
+                            ],
+                        ],
                         'may_terminate' => true,
-                        'child_routes' => array(
-                            'default' => array(
+                        'child_routes' => [
+                            'default' => [
                                 'type'    => 'Segment',
-                                'options' => array(
+                                'options' => [
                                     'route'    => '/[:controller[/:action]]',
-                                    'constraints' => array(
+                                    'constraints' => [
                                         'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
                                         'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
-                                    ),
-                                    'defaults' => array(
-                                    ),
-                                ),
-                            ),
-                        ),
-                    ),
-                ),
-            ),
+                                    ],
+                                    'defaults' => [
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
             'MelisCommerceOrderInvoiceCheckInvoice' => [
                 'type' => 'Literal',
                 'options' => [
@@ -66,55 +66,28 @@ return array(
                     ],
                 ],
             ],
-        ),
-    ),
-    'translator' => array(
-        'locale' => 'en_EN',
-    ),
-    'service_manager' => array(
-        'invokables' => array(
-
-        ),
-        'aliases' => array(
-            'translator' => 'MvcTranslator',
-            'MelisCommerceOrderInvoiceTable' => 'MelisCommerceOrderInvoice\Model\Tables\MelisCommerceOrderInvoiceTable'
-        ),
-        'factories' => array(
-            // Service
-            'MelisCommerceOrderInvoiceService' => 'MelisCommerceOrderInvoice\Service\Factory\MelisCommerceOrderInvoiceServiceFactory',
-
+        ],
+    ],
+    'service_manager' => [
+        'aliases' => [
             // Table
-            'MelisCommerceOrderInvoice\Model\Tables\MelisCommerceOrderInvoiceTable' => 'MelisCommerceOrderInvoice\Model\Tables\Factory\MelisCommerceOrderInvoiceTableFactory'
-        ),
-    ),
-    'controllers' => array(
-        'invokables' => array(
-            'MelisCommerceOrderInvoice\Controller\MelisCommerceOrderInvoice' => 'MelisCommerceOrderInvoice\Controller\MelisCommerceOrderInvoiceController',
-        ),
-    ),
-    'controller_plugins' => array(
-        'invokables' => array(
-
-        ),
-    ),
-    'form_elements' => array(
-        'factories' => array(
-
-        ),
-    ),
-    'view_manager' => array(
-        'display_not_found_reason' => true,
-        'display_exceptions'       => true,
-        'doctype'                  => 'HTML5',
-        'template_map' => array(
-            'orderinvoicetemplate/default' => __DIR__ . '/../view/melis-commerce-order-invoice/melis-commerce-order-invoice/default-order-invoice-template.phtml',
-            'export-invoice' => __DIR__ . '/../view/melis-commerce-order-invoice/melis-commerce-order-invoice/export-order-invoice.phtml'
-        ),
-        'template_path_stack' => array(
+            'MelisCommerceOrderInvoiceTable'    => \MelisCommerceOrderInvoice\Model\Tables\MelisCommerceOrderInvoiceTable::class,
+            // Service
+            'MelisCommerceOrderInvoiceService'  => \MelisCommerceOrderInvoice\Service\MelisCommerceOrderInvoiceService::class
+        ],
+    ],
+    'controllers' => [
+        'invokables' => [
+            'MelisCommerceOrderInvoice\Controller\MelisCommerceOrderInvoice' => \MelisCommerceOrderInvoice\Controller\MelisCommerceOrderInvoiceController::class,
+        ],
+    ],
+    'view_manager' => [
+        'template_map' => [
+            'orderinvoicetemplate/default'  => __DIR__ . '/../view/melis-commerce-order-invoice/melis-commerce-order-invoice/default-order-invoice-template.phtml',
+            'export-invoice'                => __DIR__ . '/../view/melis-commerce-order-invoice/melis-commerce-order-invoice/export-order-invoice.phtml'
+        ],
+        'template_path_stack' => [
             __DIR__ . '/../view',
-        ),
-        'strategies' => array(
-            'ViewJsonStrategy',
-        ),
-    ),
-);
+        ],
+    ],
+];

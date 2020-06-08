@@ -22,21 +22,21 @@
                             'ajaxCallback' => '',
                             'filters' => [
                                 'left' => [
-                                    'order-basket-list-table-filter-limit' => array(
+                                    'order-basket-list-table-filter-limit' => [
                                         'module' => 'MelisCommerce',
                                         'controller' => 'MelisComOrder',
                                         'action' => 'render-order-content-filter-limit'
-                                    ),
+                                    ],
                                 ],
                                 'center' => [
 
                                 ],
                                 'right' => [
-                                    'order-status-table-filter-refresh' => array(
+                                    'order-status-table-filter-refresh' => [
                                         'module' => 'MelisCommerceOrderInvoice',
                                         'controller' => 'MelisCommerceOrderInvoice',
                                         'action' => 'render-order-list-content-filter-refresh'
-                                    ),
+                                    ],
                                 ],
                             ],
                             'columns' => [
@@ -51,11 +51,11 @@
 
                             ],
                             'actionButtons' => [
-                                'export-pdf' => array(
+                                'export-pdf' => [
                                     'module' => 'MelisCommerceOrderInvoice',
                                     'controller' => 'MelisCommerceOrderInvoice',
                                     'action' => 'render-invoice-list-content-action-export-pdf'
-                                ),
+                                ],
                             ],
                         ],
                     ],
