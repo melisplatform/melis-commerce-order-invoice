@@ -2,13 +2,13 @@
 
 namespace MelisCommerceOrderInvoice\Controller;
 
-use MelisCore\Controller\AbstractActionController;
+use MelisCore\Controller\MelisAbstractActionController;
 use Laminas\Authentication\AuthenticationService;
 use Laminas\View\Model\ViewModel;
 use Laminas\View\Model\JsonModel;
 use Laminas\Session\Container;
 
-class MelisCommerceOrderInvoiceController extends AbstractActionController
+class MelisCommerceOrderInvoiceController extends MelisAbstractActionController
 {
     /**
      * Returns the pdf contents
