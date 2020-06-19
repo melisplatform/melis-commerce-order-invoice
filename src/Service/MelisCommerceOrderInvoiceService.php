@@ -9,14 +9,14 @@
 
 namespace MelisCommerceOrderInvoice\Service;
 
-use MelisCore\Service\MelisServiceManager;
+use MelisCommerce\Service\MelisComGeneralService;
 use Spipu\Html2Pdf\Html2Pdf;
 use Spipu\Html2Pdf\Exception\Html2PdfException;
 use Spipu\Html2Pdf\Exception\ExceptionFormatter;
 use Laminas\View\Model\ViewModel;
 use Laminas\I18n\Translator\Translator;
 
-class MelisCommerceOrderInvoiceService extends MelisServiceManager
+class MelisCommerceOrderInvoiceService extends MelisComGeneralService
 {
     protected $invoiceId;
     protected $date;
