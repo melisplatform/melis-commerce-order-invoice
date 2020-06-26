@@ -323,18 +323,18 @@ class MelisCommerceOrderInvoiceService extends MelisComGeneralService
                 ];
 
                 // PRODUCT WITHOUT DISCOUNT
-                $data['items'][] = [
-                    'obas_product_name' => $item->obas_product_name,
-                    'obas_quantity' => $item->obas_quantity - $discountDetails['qty_used'],
-                    'currency' => $currency['cur_symbol'],
-                    'obas_price_net' => $this->formatPrice($currency['cur_symbol'], $item->obas_price_net),
-                    'discount' => '',
-                    'unitDiscountPrice' => '',
-                    'amount' => $this->formatPrice(
-                        $currency['cur_symbol'],
-                        $item->obas_price_net * ($item->obas_quantity - $discountDetails['qty_used'])
-                    )
-                ];
+//                $data['items'][] = [
+//                    'obas_product_name' => $item->obas_product_name,
+//                    'obas_quantity' => $item->obas_quantity - $discountDetails['qty_used'],
+//                    'currency' => $currency['cur_symbol'],
+//                    'obas_price_net' => $this->formatPrice($currency['cur_symbol'], $item->obas_price_net),
+//                    'discount' => '',
+//                    'unitDiscountPrice' => '',
+//                    'amount' => $this->formatPrice(
+//                        $currency['cur_symbol'],
+//                        $item->obas_price_net * ($item->obas_quantity - $discountDetails['qty_used'])
+//                    )
+//                ];
             } else {
                 $data['items'][] = [
                     'obas_product_name' => $item->obas_product_name,
