@@ -9,10 +9,10 @@
 
 namespace MelisCommerceOrderInvoice;
 
-use Zend\Mvc\ModuleRouteListener;
-use Zend\Mvc\MvcEvent;
-use Zend\Stdlib\ArrayUtils;
-use Zend\Session\Container;
+use Laminas\Mvc\ModuleRouteListener;
+use Laminas\Mvc\MvcEvent;
+use Laminas\Stdlib\ArrayUtils;
+use Laminas\Session\Container;
 
 use MelisCommerceOrderInvoice\Listener\MelisCommerceOrderInvoiceGenerateInvoiceListener;
 use MelisCommerceOrderInvoice\Listener\MelisCommerceOrderDetailsInvoiceDataListener;
@@ -32,9 +32,9 @@ class Module
         if (! empty($routeMatch))
             $this->createTranslations($e,$routeMatch);
 
-        $eventManager->attach(new MelisCommerceOrderInvoiceGenerateInvoiceListener());
-        $eventManager->attach(new MelisCommerceOrderDetailsInvoiceDataListener());
-        $eventManager->attach(new MelisCommerceOrderHistoryInvoiceDataListener());
+        (new MelisCommerceOrderInvoiceGenerateInvoiceListener())->attach($eventManager);
+        (new MelisCommerceOrderDetailsInvoiceDataListener())->attach($eventManager);
+        (new MelisCommerceOrderHistoryInvoiceDataListener())->attach($eventManager);
     }
 
     public function getConfig()
@@ -56,7 +56,7 @@ class Module
     public function getAutoloaderConfig()
     {
         return [
-            'Zend\Loader\StandardAutoloader' => [
+            'Laminas\Loader\StandardAutoloader' => [
                 'namespaces' => [
                     __NAMESPACE__ => __DIR__ . '/src/' . __NAMESPACE__,
                 ],

@@ -9,23 +9,22 @@
 
 namespace MelisCommerceOrderInvoice\Listener;
 
-use Zend\EventManager\EventManagerInterface;
-use Zend\EventManager\ListenerAggregateInterface;
-use MelisCore\Listener\MelisCoreGeneralListener;
+use Laminas\EventManager\EventManagerInterface;
+use Laminas\EventManager\ListenerAggregateInterface;
+use MelisCore\Listener\MelisGeneralListener;
 
-class MelisCommerceOrderInvoiceGenerateInvoiceListener extends MelisCoreGeneralListener implements ListenerAggregateInterface
+class MelisCommerceOrderInvoiceGenerateInvoiceListener extends MelisGeneralListener implements ListenerAggregateInterface
 {
-    public function attach(EventManagerInterface $events)
+    public function attach(EventManagerInterface $events, $priority = 1)
     {
-        $sharedEvents = $events->getSharedManager();
-
-        $callBackHandler = $sharedEvents->attach(
+        $this->attachEventListener(
+            $events,
             '*',
             [
                 'meliscommerce_service_checkout_step2_postpayment_proccess_end'
             ],
             function($e){
-                $sm = $e->getTarget()->getServiceLocator();
+                $sm = $e->getTarget()->getServiceManager();
                 $params = $e->getParams();
 
                 if ($params['results']['success']) {
@@ -40,8 +39,7 @@ class MelisCommerceOrderInvoiceGenerateInvoiceListener extends MelisCoreGeneralL
                     }
                 }
             },
-            -1000);
-
-        $this->listeners[] = $callBackHandler;
+            -1000
+        );
     }
 }

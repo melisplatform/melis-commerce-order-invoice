@@ -9,23 +9,22 @@
 
 namespace MelisCommerceOrderInvoice\Listener;
 
-use Zend\EventManager\EventManagerInterface;
-use Zend\EventManager\ListenerAggregateInterface;
-use MelisCore\Listener\MelisCoreGeneralListener;
+use Laminas\EventManager\EventManagerInterface;
+use Laminas\EventManager\ListenerAggregateInterface;
+use MelisCore\Listener\MelisGeneralListener;
 
-class MelisCommerceOrderDetailsInvoiceDataListener extends MelisCoreGeneralListener implements ListenerAggregateInterface
+class MelisCommerceOrderDetailsInvoiceDataListener extends MelisGeneralListener implements ListenerAggregateInterface
 {
-    public function attach(EventManagerInterface $events)
+    public function attach(EventManagerInterface $events, $priority = 1)
     {
-        $sharedEvents = $events->getSharedManager();
-
-        $callBackHandler = $sharedEvents->attach(
+        $this->attachEventListener(
+            $events,
             '*',
             [
                 'MelisCommerceOrderPlugin_melistemplating_plugin_generate_view'
             ],
             function($e){
-                $sm = $e->getTarget()->getServiceLocator();
+                $sm = $e->getTarget()->getServiceManager();
                 $params = $e->getParams();
 
                 if (!empty($params['order'])) {
@@ -42,8 +41,7 @@ class MelisCommerceOrderDetailsInvoiceDataListener extends MelisCoreGeneralListe
 
                     $params['orderInvoice'] = $invoice;
                 }
-            });
-
-        $this->listeners[] = $callBackHandler;
+            }
+        );
     }
 }

@@ -9,14 +9,14 @@
 
 namespace MelisCommerceOrderInvoice\Service;
 
-use MelisCore\Service\MelisCoreGeneralService;
+use MelisCommerce\Service\MelisComGeneralService;
 use Spipu\Html2Pdf\Html2Pdf;
 use Spipu\Html2Pdf\Exception\Html2PdfException;
 use Spipu\Html2Pdf\Exception\ExceptionFormatter;
-use Zend\View\Model\ViewModel;
-use Zend\I18n\Translator\Translator;
+use Laminas\View\Model\ViewModel;
+use Laminas\I18n\Translator\Translator;
 
-class MelisCommerceOrderInvoiceService extends MelisCoreGeneralService
+class MelisCommerceOrderInvoiceService extends MelisComGeneralService
 {
     protected $invoiceId;
     protected $date;
@@ -32,7 +32,7 @@ class MelisCommerceOrderInvoiceService extends MelisCoreGeneralService
     private function html2pdf ($order, $template)
     {
         try {
-            $viewRendererService = $this->getServiceLocator()->get('ViewRenderer');
+            $viewRendererService = $this->getServiceManager()->get('ViewRenderer');
             $data = $this->prepareData($order);
 
             $view = new ViewModel();
@@ -111,7 +111,7 @@ class MelisCommerceOrderInvoiceService extends MelisCoreGeneralService
         );
 
         //tables and services
-        $orderInvoiceTable = $this->getServiceLocator()->get('MelisCommerceOrderInvoiceTable');
+        $orderInvoiceTable = $this->getServiceManager()->get('MelisCommerceOrderInvoiceTable');
         $invoice = $orderInvoiceTable->getEntryById($arrayParameters['invoiceId'])->toArray();
 
         $arrayParameters['result'] = !empty($invoice) ? $invoice[0] : '';
@@ -139,9 +139,9 @@ class MelisCommerceOrderInvoiceService extends MelisCoreGeneralService
         );
 
         //tables and services
-        $orderInvoiceTable = $this->getServiceLocator()->get('MelisCommerceOrderInvoiceTable');
-        $ordersService = $this->getServiceLocator()->get('MelisComOrderService');
-        $melisEcomLangTable = $this->getServiceLocator()->get('MelisEcomLangTable');
+        $orderInvoiceTable = $this->getServiceManager()->get('MelisCommerceOrderInvoiceTable');
+        $ordersService = $this->getServiceManager()->get('MelisComOrderService');
+        $melisEcomLangTable = $this->getServiceManager()->get('MelisEcomLangTable');
         //order data
         $order = $ordersService->getOrderById($arrayParameters['orderId']);
 
@@ -198,7 +198,7 @@ class MelisCommerceOrderInvoiceService extends MelisCoreGeneralService
         );
 
         // logic stars here
-        $orderInvoiceTable = $this->getServiceLocator()->get('MelisCommerceOrderInvoiceTable');
+        $orderInvoiceTable = $this->getServiceManager()->get('MelisCommerceOrderInvoiceTable');
 
         $invoiceList = $orderInvoiceTable->getOrderInvoiceList(
             $arrayParameters['orderId'],
@@ -232,7 +232,7 @@ class MelisCommerceOrderInvoiceService extends MelisCoreGeneralService
         );
 
         // logic stars here
-        $orderInvoiceTable = $this->getServiceLocator()->get('MelisCommerceOrderInvoiceTable');
+        $orderInvoiceTable = $this->getServiceManager()->get('MelisCommerceOrderInvoiceTable');
 
         $invoice = $orderInvoiceTable->getEntryById($arrayParameters['invoiceId'])->toArray()[0];
 
@@ -261,7 +261,7 @@ class MelisCommerceOrderInvoiceService extends MelisCoreGeneralService
             $arrayParameters
         );
 
-        $config = $this->getServiceLocator()->get('config');
+        $config = $this->getServiceManager()->get('config');
         $custom = $config['plugins']['meliscommerceorderinvoice']['data']['custom-pdf-file-name'];
         $date = strftime('%Y%m%d', strtotime($arrayParameters['dateGenerated']));
 
@@ -460,7 +460,7 @@ class MelisCommerceOrderInvoiceService extends MelisCoreGeneralService
      * @return array
      */
     private function getCoupons ($orderId) {
-        $couponSvc = $this->getServiceLocator()->get('MelisComCouponService');
+        $couponSvc = $this->getServiceManager()->get('MelisComCouponService');
         $orderCoupons = $couponSvc->getCouponList($orderId);
         $coupons = array();
 
@@ -503,7 +503,7 @@ class MelisCommerceOrderInvoiceService extends MelisCoreGeneralService
      */
     private function getCurrency ($currId)
     {
-        $currTbl = $this->getServiceLocator()->get('MelisEcomCurrencyTable');
+        $currTbl = $this->getServiceManager()->get('MelisEcomCurrencyTable');
         $curr = $currTbl->getEntryById($currId)->toArray()[0];
 
         return $curr;
