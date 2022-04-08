@@ -53,7 +53,6 @@ class MelisCommerceOrderInvoiceService extends MelisComGeneralService
             $this->sendEvent('meliscommerceorderinvoice_pdf_view', ['view' => $view]);
 
             $contents = $viewRendererService->render($view);
-
             $html2pdf = new Html2Pdf('P', 'A4', 'en');
             $html2pdf->writeHTML($contents);
             $pdf = $html2pdf->output('', 'S');
@@ -350,24 +349,22 @@ class MelisCommerceOrderInvoiceService extends MelisComGeneralService
                 ];
             }
 
-            $subtotal += number_format(
-                ($item->obas_price_net * $item->obas_quantity) - $discountDetails['discountTotal'],
-                2
-            );
-        }
-
+            $subtotal += ($item->obas_price_net * $item->obas_quantity) - $discountDetails['discountTotal'];           
+        }   
+       
         // PREPARE COUPONS
         $coupons = $this->getCouponDetails($orderCoupons, $subtotal);
+        if ($coupons) {
+            foreach ($coupons as $coupon) {
+                $data['coupons'][] = [
+                    'code' => '(' . $coupon['couponCode'] . ') ',
+                    'discount' => '- ' . $this->formatPrice($currency['cur_symbol'], $coupon['couponDiscount'])
+                ];
 
-        foreach ($coupons as $coupon) {
-            $data['coupons'][] = [
-                'code' => '(' . $coupon['couponCode'] . ') ',
-                'discount' => '- ' . $this->formatPrice($currency['cur_symbol'], $coupon['couponDiscount'])
-            ];
-
-            $totalCouponDiscount += $coupon['couponDiscount'];
+                $totalCouponDiscount += $coupon['couponDiscount'];
+            }
         }
-
+        
         // PREPARE FINAL DATA
         $data['hasItemDiscount'] = $hasItemDiscount;
         $data['subtotal'] = $this->formatPrice($currency['cur_symbol'], $subtotal);
@@ -375,7 +372,7 @@ class MelisCommerceOrderInvoiceService extends MelisComGeneralService
 
         if ($totalCouponDiscount >= $subtotal) {
             $total = $shipping;
-        } else {
+        } else {   
             $total = ($subtotal - $totalCouponDiscount) + $shipping;
         }
 
@@ -516,7 +513,7 @@ class MelisCommerceOrderInvoiceService extends MelisComGeneralService
      * @return mixed|string
      */
     private function formatPrice ($currency, $price) {
-        $price = number_format($price, 2);
+        $price = number_format((float) $price, 2);
 
         if ($this->clientLangLocale == 'fr_FR') {
             $formattedPrice = str_replace('.', ',', (string) $price) . $currency;
