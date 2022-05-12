@@ -187,7 +187,7 @@ class MelisCommerceOrderInvoiceService extends MelisComGeneralService
      * @param $orderId
      * @param int $limit
      */
-    public function getOrderInvoiceList ($orderId, $start, $limit, $order)
+    public function getOrderInvoiceList ($orderId, $start, $limit, $order, $orderCol)
     {
         $arrayParameters = $this->makeArrayFromParameters(__METHOD__, func_get_args());
 
@@ -203,7 +203,8 @@ class MelisCommerceOrderInvoiceService extends MelisComGeneralService
             $arrayParameters['orderId'],
             $arrayParameters['start'],
             $arrayParameters['limit'],
-            $arrayParameters['order']
+            $arrayParameters['order'],
+            $arrayParameters['orderCol']
         )->toArray();
 
         $arrayParameters['results'] = $invoiceList;

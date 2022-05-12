@@ -169,6 +169,8 @@ class MelisCommerceOrderInvoiceController extends MelisAbstractActionController
     {
         $draw = 0;
         $tableData = [];
+        $melisTool = $this->getServiceManager()->get('MelisCoreTool');
+        $melisTool->setMelisToolKey('meliscommerce', 'meliscommerce_order_invoice_list');
 
         $orderInvoiceService = $this->getServiceManager()->get('MelisCommerceOrderInvoiceService');
 
@@ -178,8 +180,13 @@ class MelisCommerceOrderInvoiceController extends MelisAbstractActionController
             $limit =  (int) $this->getRequest()->getPost('length');
             $orderId = $this->getRequest()->getPost('orderId');
 
-            $allOrderInvoiceList = $orderInvoiceService->getOrderInvoiceList($orderId, null, null, null);
-            $orderInvoiceList = $orderInvoiceService->getOrderInvoiceList($orderId, $start, $limit, 'DESC');
+            $selCol = $this->getRequest()->getPost('order');
+            $colId = array_keys($melisTool->getColumns());
+            $selCol = $colId[$selCol[0]['column']];
+            $sortOrder = $this->getRequest()->getPost('order');
+            $sortOrder = $sortOrder[0]['dir'];
+            $allOrderInvoiceList = $orderInvoiceService->getOrderInvoiceList($orderId, null, null, null, null);
+            $orderInvoiceList = $orderInvoiceService->getOrderInvoiceList($orderId, $start, $limit, $sortOrder, $selCol);
 
             foreach ($orderInvoiceList as $invoice) {
                 $tableData[] = [
