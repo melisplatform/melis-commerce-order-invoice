@@ -28,7 +28,7 @@ class MelisCommerceOrderInvoiceTable extends MelisEcomGenericTable
         $this->idField = self::PRIMARY_KEY;
     }
 
-    public function getOrderInvoiceList($orderId, $start, $limit, $order, $ordercol)
+    public function getOrderInvoiceList($orderId, $start, $limit, $order, $ordercol = null)
     {
         $select = $this->getTableGateway()->getSql()->select();
         $select->where->equalTo('ordin_order_id', $orderId);
@@ -44,7 +44,7 @@ class MelisCommerceOrderInvoiceTable extends MelisEcomGenericTable
         if (!is_null($order) && !is_null($ordercol)) {
             $select->order($ordercol . ' ' .$order);
         } else {
-            $select->order(self::PRIMARY_KEY . ' DESC');
+            $select->order(self::PRIMARY_KEY . ' '.$order);
         }
 
         $resultData = $this->getTableGateway()->selectWith($select);
