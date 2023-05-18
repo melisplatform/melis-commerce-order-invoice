@@ -1,0 +1,1 @@
+ALTER TABLE `melis_ecom_order_invoice` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
