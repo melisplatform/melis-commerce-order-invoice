@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS `melis_ecom_order_invoice` (
   `ordin_date_generated` datetime NOT NULL COMMENT 'Date when PDF was generated',
   `ordin_invoice_pdf` longblob NOT NULL COMMENT 'The PDF file',
   PRIMARY KEY (`ordin_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
