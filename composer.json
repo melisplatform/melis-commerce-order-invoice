@@ -19,9 +19,9 @@
 		"dbdeploy": true
 	},
 	"require": {
-		"php": "^7.3|^8.0",
+		"php": "^8.1|^8.3",
 		"spipu/html2pdf": "^5.2",
-		"melisplatform/melis-commerce": "^5.0"
+		"melisplatform/melis-commerce": "*"
 	},
 	"autoload": {
 		"psr-4": {
