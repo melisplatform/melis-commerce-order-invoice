@@ -104,7 +104,5 @@ class Module
                 $translator->addTranslationFile('phparray', $transPath);
             }
         }
-        $lang = explode('_', $locale);
-        $lang = $lang[0];
     }
 }
