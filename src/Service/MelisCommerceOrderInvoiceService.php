@@ -149,10 +149,10 @@ class MelisCommerceOrderInvoiceService extends MelisComGeneralService
         $clientId = $clientData->cli_id;
         $this->clientLangId = $order->getPerson()->cper_lang_id;
         $this->clientLangLocale = $melisEcomLangTable->getEntryById($this->clientLangId)->toArray()[0]['elang_locale'];
-
-        $dateFormat = explode(" ", $this->getDateFormatByLocate($this->clientLangLocale))[0];
+        
         //date created, this will also be used in the pdf
-        $this->date = strftime($dateFormat, strtotime(date("Y-m-d H:i:s")));
+        $formatter = new \IntlDateFormatter($this->clientLangLocale, \IntlDateFormatter::LONG, \IntlDateFormatter::NONE);
+        $this->date = $formatter->format(strtotime(date("Y-m-d H:i:s")));
 
         //save invoice to get the ID
         $invoiceId = $orderInvoiceTable->save([
@@ -262,7 +262,7 @@ class MelisCommerceOrderInvoiceService extends MelisComGeneralService
 
         $config = $this->getServiceManager()->get('config');
         $custom = $config['plugins']['meliscommerceorderinvoice']['data']['custom-pdf-file-name'];
-        $date = strftime('%Y%m%d', strtotime($arrayParameters['dateGenerated']));
+        $date = date('Y/m/d', strtotime($arrayParameters['dateGenerated']));
 
         $filename = $date . '-' . $arrayParameters['orderId'] . '-' . $arrayParameters['invoiceId'];
 
