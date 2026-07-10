@@ -1,0 +1,8 @@
+{
+  "id": "commerce-order-invoice",
+  "route": null,
+  "label": null,
+  "forwardKey": null,
+  "melisKey": null,
+  "entry": "brick.js"
+}
