@@ -35,7 +35,15 @@ class MelisCommerceOrderInvoiceGenerateInvoiceListener extends MelisGeneralListe
 
                     if ($orderStatus[0]->osta_id == 1) {
                         $orderInvoiceService = $sm->get('MelisCommerceOrderInvoiceService');
-                        $invoiceId = $orderInvoiceService->generateOrderInvoice($orderId, 'orderinvoicetemplate/default');
+                        try {
+                            $invoiceId = $orderInvoiceService->generateOrderInvoice($orderId, 'orderinvoicetemplate/default');
+                        } catch (\Throwable $e) {
+                            // Invoice PDF generation is a side effect of order confirmation, not
+                            // part of it — payment has already been taken by this point, so a
+                            // failure here (e.g. a broken template asset) must never abort the
+                            // checkout flow.
+                            error_log('MelisCommerceOrderInvoice: failed to generate invoice for order ' . $orderId . ': ' . $e->getMessage());
+                        }
                     }
                 }
             },

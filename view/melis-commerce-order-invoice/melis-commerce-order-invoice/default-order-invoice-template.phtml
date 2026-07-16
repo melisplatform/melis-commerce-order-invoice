@@ -73,10 +73,15 @@
         <table height="15" id="invoice" border="0" style="width: 100%;" cellpadding="0" cellspacing="0">
             <thead>
             <tr class="heading">
+                <?php /* The logo image referenced here (MelisCommerceOrderInvoice/assets/logo-melis.png)
+                         has no serving route and no asset file anywhere in the app, and html2pdf blocks
+                         fetching it as an external URL by default (empty allowed-hosts list) regardless —
+                         so this always failed PDF generation outright. Dropped until a real asset + a
+                         local file path (which html2pdf allows without a host check) are wired up. */ ?>
                 <?php if ($this->data['hasItemDiscount']) { ?>
-                <th class="logo" align="left" style="width: 25%;"><img src="<?php echo $this->serverUrl() . '/MelisCommerceOrderInvoice/assets/logo-melis.png' ?>"></th>
+                <th class="logo" align="left" style="width: 25%;"></th>
                 <?php } else { ?>
-                <th class="logo" align="left" style="width: 40%;"><img src="<?php echo $this->serverUrl() . '/MelisCommerceOrderInvoice/assets/logo-melis.png' ?>"></th>
+                <th class="logo" align="left" style="width: 40%;"></th>
                 <?php } ?>
                 <th style="<?= $column ?>">&nbsp;</th>
                 <th style="width: 10%;">&nbsp;</th>

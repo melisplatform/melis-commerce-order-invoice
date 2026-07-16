@@ -31,6 +31,8 @@ class MelisCommerceOrderInvoiceService extends MelisComGeneralService
      */
     private function html2pdf ($order, $template)
     {
+        $pdf = null;
+
         try {
             $viewRendererService = $this->getServiceManager()->get('ViewRenderer');
             $data = $this->prepareData($order);
@@ -57,10 +59,13 @@ class MelisCommerceOrderInvoiceService extends MelisComGeneralService
             $html2pdf->writeHTML($contents);
             $pdf = $html2pdf->output('', 'S');
         } catch (Html2PdfException $e) {
-            $html2pdf->clean();
-            $formatter = new ExceptionFormatter($e);
-
-            echo $formatter->getHtmlMessage();
+            if (isset($html2pdf)) {
+                $html2pdf->clean();
+            }
+            // Do not echo the formatter's HTML into the response — this method runs as a side
+            // effect of order confirmation (see MelisCommerceOrderInvoiceGenerateInvoiceListener)
+            // and echoing here leaks debug HTML into that unrelated response body.
+            error_log((new ExceptionFormatter($e))->getMessage());
         }
 
         return $pdf;
@@ -164,13 +169,27 @@ class MelisCommerceOrderInvoiceService extends MelisComGeneralService
 
         $this->invoiceId = $invoiceId;
 
-        $pdfContents = $this->html2pdf($order, $arrayParameters['template']);
+        try {
+            $pdfContents = $this->html2pdf($order, $arrayParameters['template']);
 
+            if ($pdfContents === null) {
+                throw new \RuntimeException('PDF rendering returned no content');
+            }
 
-        //update invoice with the correct pdf
-        $orderInvoiceTable->save([
-            'ordin_invoice_pdf' => $pdfContents
-        ], $invoiceId);
+            //update invoice with the correct pdf
+            $orderInvoiceTable->save([
+                'ordin_invoice_pdf' => $pdfContents
+            ], $invoiceId);
+        } catch (\Throwable $e) {
+            // Catches both a clean null return from html2pdf() and anything that escapes its own
+            // try/catch (e.g. a failure earlier in prepareData()'s address/currency/coupon lookups).
+            // Either way, remove the placeholder row instead of leaving it stuck with literal
+            // placeholder text in the NOT NULL ordin_invoice_pdf column.
+            $orderInvoiceTable->deleteById($invoiceId);
+            error_log('MelisCommerceOrderInvoice: failed to generate invoice for order ' . $orderId . ': ' . $e->getMessage());
+
+            return null;
+        }
 
         $arrayParameters['results'] = $invoiceId;
 
