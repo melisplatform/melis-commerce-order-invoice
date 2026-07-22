@@ -1,8 +1,5 @@
 import { useState } from 'react'
-
-/** Rejoue le flux 2 étapes de public/js/meliscommerceorderinvoice.js (même session/cookie),
- *  sans toucher au legacy : on appelle simplement les endpoints existants du contrôleur. */
-const INVOICE_BASE = '/melis/MelisCommerceOrderInvoice/MelisCommerceOrderInvoice'
+import { fetchLatestInvoiceId, downloadInvoiceFile } from './invoiceApi'
 
 function currentLang(): 'fr' | 'en' {
   const l = (document.documentElement.lang || 'fr').toLowerCase()
@@ -12,28 +9,6 @@ function currentLang(): 'fr' | 'en' {
 const STR = {
   fr: { title: 'Télécharger la facture', none: 'Aucune facture disponible pour cette commande.', fail: 'Le téléchargement de la facture a échoué.' },
   en: { title: 'Download invoice', none: 'No invoice available for this order.', fail: 'Invoice download failed.' },
-}
-
-async function fetchLatestInvoiceId(orderId: number): Promise<number | null> {
-  const res = await fetch(`${INVOICE_BASE}/getOrderLatestInvoiceId`, {
-    method: 'POST', credentials: 'same-origin',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: `orderId=${encodeURIComponent(String(orderId))}`,
-  })
-  if (!res.ok) return null
-  const json = await res.json().catch(() => null)
-  return json?.latestInvoiceId || null
-}
-
-async function downloadInvoiceFile(invoiceId: number): Promise<{ blob: Blob; fileName: string }> {
-  const res = await fetch(`${INVOICE_BASE}/getOrderInvoice`, {
-    method: 'POST', credentials: 'same-origin',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: `invoiceId=${encodeURIComponent(String(invoiceId))}`,
-  })
-  if (!res.ok) throw new Error('download failed')
-  const fileName = res.headers.get('fileName') || `invoice-${invoiceId}.pdf`
-  return { blob: await res.blob(), fileName }
 }
 
 function DownloadIcon() {
