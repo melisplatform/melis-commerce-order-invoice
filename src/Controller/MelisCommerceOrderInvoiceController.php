@@ -11,6 +11,12 @@ use Laminas\Session\Container;
 class MelisCommerceOrderInvoiceController extends MelisAbstractActionController
 {
     /**
+     * Navigable back-office tool key gating invoice access (the "Invoices" order tab).
+     * The invoice plugin itself declares rightsDisplay=none, so this tab node carries the right.
+     */
+    const TOOL_KEY = 'meliscommerce_orders_content_tab_order_invoice';
+
+    /**
      * Returns the pdf contents
      * @return JsonModel|ViewModel
      */
@@ -23,6 +29,17 @@ class MelisCommerceOrderInvoiceController extends MelisAbstractActionController
             $melisCoreAuthSrv = $this->getServiceManager()->get('MelisCoreAuth');
 
             if ($melisCoreAuthSrv->hasIdentity()) {
+                // Require the commerce order-invoice tool right before returning any invoice PDF.
+                // hasIdentity() alone is insufficient: without this check any authenticated BO user
+                // could download every customer's invoice by supplying an arbitrary invoiceId.
+                $melisCoreRights = $this->getServiceManager()->get('MelisCoreRights');
+                if (!$melisCoreRights->canAccess(self::TOOL_KEY)) {
+                    $response = $this->getResponse();
+                    $response->setStatusCode(403);
+                    $response->setContent('');
+                    return $response;
+                }
+
                 $orderInvoiceService = $this->getServiceManager()->get('MelisCommerceOrderInvoiceService');
                 $invoice = $orderInvoiceService->getInvoice($invoiceId);
                 /**
