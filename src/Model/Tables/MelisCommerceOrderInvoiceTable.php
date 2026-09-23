@@ -42,7 +42,7 @@ class MelisCommerceOrderInvoiceTable extends MelisEcomGenericTable
         }
 
         if (!is_null($order)) {
-            $select->order('ordin_id ' . $order);
+            \MelisCore\Model\Tables\MelisGenericTable::addSafeOrder($select, 'ordin_id', $order);
         }
 
         $resultData = $this->getTableGateway()->selectWith($select);
