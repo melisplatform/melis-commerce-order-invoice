@@ -11,10 +11,12 @@ use Laminas\Session\Container;
 class MelisCommerceOrderInvoiceController extends MelisAbstractActionController
 {
     /**
-     * Navigable back-office tool key gating invoice access (the "Invoices" order tab).
-     * The invoice plugin itself declares rightsDisplay=none, so this tab node carries the right.
+     * Rights key gating back-office invoice access (audit DEKRA 7.0): the Invoices tab lives in the
+     * order page, so it follows the Orders tool, like the other order tabs. The former key
+     * (meliscommerce_orders_content_tab_order_invoice) cannot be ticked in Users → Rights, which
+     * refused every non-admin and left the other actions outside the authorization gate.
      */
-    const TOOL_KEY = 'meliscommerce_orders_content_tab_order_invoice';
+    const MELIS_KEY = 'meliscommerce_order_list_page';
 
     /**
      * Returns the pdf contents
@@ -33,7 +35,7 @@ class MelisCommerceOrderInvoiceController extends MelisAbstractActionController
                 // hasIdentity() alone is insufficient: without this check any authenticated BO user
                 // could download every customer's invoice by supplying an arbitrary invoiceId.
                 $melisCoreRights = $this->getServiceManager()->get('MelisCoreRights');
-                if (!$melisCoreRights->canAccess(self::TOOL_KEY)) {
+                if (!$melisCoreRights->canAccess(self::MELIS_KEY)) {
                     $response = $this->getResponse();
                     $response->setStatusCode(403);
                     $response->setContent('');
