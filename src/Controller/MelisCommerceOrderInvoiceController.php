@@ -11,10 +11,8 @@ use Laminas\Session\Container;
 class MelisCommerceOrderInvoiceController extends MelisAbstractActionController
 {
     /**
-     * Rights key gating back-office invoice access (audit DEKRA 7.0): the Invoices tab lives in the
-     * order page, so it follows the Orders tool, like the other order tabs. The former key
-     * (meliscommerce_orders_content_tab_order_invoice) cannot be ticked in Users → Rights, which
-     * refused every non-admin and left the other actions outside the authorization gate.
+     * Rights key gating back-office invoice access: the Invoices tab lives in the
+     * order page, so it follows the Orders tool, like the other order tabs.
      */
     const MELIS_KEY = 'meliscommerce_order_list_page';
 
